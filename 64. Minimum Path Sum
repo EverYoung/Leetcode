@@ -1,0 +1,29 @@
+Minimum Path Sum problem is a typical 2D dynamic programming problem. 
+It is similar to problems like Unique Path and Unique Path II. 
+We can simply keep a temporary vector to store and update the minimum path to each coordinate in the grid row by row, or column by column (depends on which is lareger).
+Suppose the number of columns and rows are respectively n and m. 
+Original dynamic programming thought may use a n*m matrix, which is not necessary.
+We can simply use a vector with length of n or m.
+Code:
+
+
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        int n = grid.size();
+        if(n==0) return 0;
+        int m = grid[0].size();
+        vector<int> dp(n, 0);
+        dp[0] = grid[0][0];
+        for(int i=1; i<n; i++){
+            dp[i] = dp[i-1] + grid[i][0];
+        }
+        for(int j=1; j<m; j++){
+            dp[0] = dp[0] + grid[0][j];
+            for(int i=1; i<n; i++){
+                dp[i] = min(dp[i-1], dp[i]) + grid[i][j];
+            }
+        }
+        return dp[n-1];
+    }
+};
