@@ -1,0 +1,34 @@
+Dynamic Programming.
+
+We create a matrix "dp" with size n*m, each element dp[i][j] means the minimum health required to get to position dungeon[i][j].
+Notice that when when the prince get to where the princess at (right-bottom), he must still have 1 health. 
+So the minimum health required at princess' grid is 1-dungeon[n-1][m-1]. This value can be negative if dungeon[n-1][m-1] is positive.
+Actually, this is the same for every grid. If the value is negative, that means we don't need that much health to get to this grid, but
+since the minimum health of prince can only be 1, so in this case we replace the value with 1. In all, at each grid, the minimum required 
+health should be dp[i][j] = max(1, min(dp[i+1][j], dp[i][j+1])-dungeon[i][j]), which is the minimum required health of last step (which can
+be from the right or below) minus dungeon[i][j] under the judgement whether it is negative and needed to be replaced with 1.
+
+Then we only need to initialize dp[n-1][m-1] and calculate marginal cases and then use for loop to finally calculate dp[0][0] step by step.
+dp[0][0] will be our answer.
+
+class Solution {
+public:
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        int n = dungeon.size(), m = dungeon[0].size();
+        vector<vector<int>> dp(n, vector<int>(m, 0));
+        dp[n-1][m-1] = max(1, 1-dungeon[n-1][m-1]);
+        for(int i=n-2; i>=0; i--){
+            dp[i][m-1] = (dp[i+1][m-1]-dungeon[i][m-1])<=0 ? 1 : dp[i+1][m-1]-dungeon[i][m-1];
+        }
+        for(int j=m-2; j>=0; j--){
+            dp[n-1][j] = (dp[n-1][j+1]-dungeon[n-1][j])<=0 ? 1 : dp[n-1][j+1]-dungeon[n-1][j];
+        }
+        for(int i=n-2; i>=0; i--){
+            for(int j=m-2; j>=0; j--){
+                int curNeed = min(dp[i+1][j], dp[i][j+1]) - dungeon[i][j];
+                dp[i][j] = curNeed<=0 ? 1 : curNeed;
+            }
+        }
+        return dp[0][0];
+    }
+};
