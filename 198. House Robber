@@ -1,0 +1,23 @@
+Dynamic Programming.
+
+In-place idea:
+We store the total value we can get so far in nums. For each house, we have two cases:
+Case 1: we rob this house, then we must not rob the last house. In this case, we get nums[i-2]+nums[i].
+Case 2: we do not rob this house, then now the value we get is the same when we come to the last house, so nums[i-1].
+Then for each house we come to, the maximal value we can have is nums[i] = max(nums[i-2]+nums[i], nums[i-1]).
+
+After we go through all houses, we get the maximal value we can get as nums[n-1].
+
+Code:
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if(n==0) return 0;
+        for(int i=1; i<n; i++){
+            if(i==1) nums[i] = max(nums[0], nums[i]);
+            else nums[i] = max(nums[i-2]+nums[i], nums[i-1]);
+        }
+        return nums[n-1];
+    }
+};
