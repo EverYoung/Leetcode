@@ -1,0 +1,34 @@
+Dynamic Programming and Largest Rectangle in Histogram.
+
+Seemingly similar to Maximal Square but actually totally different.
+The idea is to keep an array height with size of the number of columns. And we calculate the total height at each row, row by row.
+At each row i, if matrix[i][j]=='0', then height[j]=0; otherwise, height[j]++;
+
+For each computed height[j], we scan back from j-1 to 0 and each step we compute the area it forms with j, using the shortest height in
+this range.
+
+Code:
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int n = matrix.size();
+        if(n==0) return 0;
+        int m = matrix[0].size();
+        vector<int> height(m, 0);
+        int maxArea = 0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(matrix[i][j]=='0') height[j] = 0;
+                else height[j]++;
+                int h = height[j];
+                for(int k=j-1; k>=0; k--){
+                    if(height[k]==0) break;
+                    h = min(height[k], h);
+                    maxArea = max(maxArea, (j-k+1)*h);
+                }
+                maxArea = max(maxArea, height[j]);
+            }
+        }
+        return maxArea;
+    }
+};
