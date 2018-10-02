@@ -1,0 +1,41 @@
+Similar to the problem House Robber I.
+But in this problem, the first house and the last house are considered adjacent.
+
+The solution is quite the same, but there are two cases now.
+Case 1: we rob the first house, then we cannot rob the last one. So we only need to consider houses with indexes from 0 to n-1
+Case 2: we do not rob the first house, then we may rob the last ont. So we only need to consdier houses with indexes from 1 to n
+And the rest of the job is just do the same dynamic programming twice for both case and return the maximal one.
+
+Code:
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if(n==0) return 0;
+        if(n==1) return nums[0];
+        if(n==2) return max(nums[0], nums[1]);
+        if(n==3) return max(nums[0], max(nums[1], nums[2]));
+        int prev1 = 0, prev2 = 0, cur1 = 0, cur2 = 0;
+        
+        prev1 = nums[0];
+        for(int i=1; i<n-1; i++){
+            if(i==1) prev2 = nums[1]>nums[0] ? nums[1] : nums[0];
+            else{
+                cur1 = max(prev1 + nums[i], prev2);
+                prev1 = prev2;
+                prev2 = cur1;
+            }    
+        }
+        
+        prev1 = nums[1];
+        for(int i=2; i<n; i++){
+            if(i==2) prev2 = nums[2]>nums[1] ? nums[2] : nums[1];
+            else{
+                cur2 = max(prev1 + nums[i], prev2);
+                prev1 = prev2;
+                prev2 = cur2;
+            }
+        }
+        return max(cur1, cur2);
+    } 
+};
