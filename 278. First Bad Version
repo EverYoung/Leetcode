@@ -1,0 +1,21 @@
+Binary Search.
+
+For number 1 to n, we come to its middle index. If isBadVersion(mid)==true, it means that the first bad version must on the left of middle
+and also include middle, then we can find in 1 to mid. Else if isBadVersion(mid)==false, it means that the first bad version must on the 
+right of middle, the we can find in mid+1 to n.
+
+class Solution {
+public:
+    int firstBadVersion(int n) {
+        return binarySearch(1, n);
+    }
+    
+    int binarySearch(int start, int end){
+        if(end>=start){
+            if(end==start) return start;
+            int mid = start + (end - start)/2;
+            if(isBadVersion(mid)) return binarySearch(start, mid);
+            else return binarySearch(mid+1, end);
+        }
+    }
+};
