@@ -1,0 +1,26 @@
+Dynamic Programming.
+
+Use a vector "dp" with size n to store the maximum possible ways at each steps.
+Suppose we at index i, two cases:
+1. if the current digit falls in 1 to 9, the current digit can itself be decoded, in this case we have dp[i-1] combinations.
+2. if the current digit and the former digit together fall in 10 to 26, these two digits can be decoded, in this case we have dp[i-2] 
+   combinations.
+
+Code:
+class Solution {
+public:
+    int numDecodings(string s) {
+        int n = s.size();
+        if(n==0) return 0;
+        vector<int> dp(n+1, 0);
+        dp[0] = 1;
+        dp[1] = s[0]=='0' ? 0 : 1;
+        for(int i=2; i<n+1; i++){
+            int oneDigit = s[i-1] - '0';
+            int twoDigit = (s[i-2] - '0') * 10 + (s[i-1] - '0');
+            if(oneDigit>0 && oneDigit<=9) dp[i] += dp[i-1];
+            if(twoDigit>=10 && twoDigit<=26) dp[i] += dp[i-2];
+        }
+        return dp[n];
+    }
+};
