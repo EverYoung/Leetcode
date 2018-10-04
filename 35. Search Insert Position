@@ -1,0 +1,24 @@
+Binary Search.
+
+Given a sorted array and find a target in it, this is a typical binary search problem.
+The main part of binary search is pretty much the same. The search algorithm terminates when it reaches a sub-array with length 1.
+At this time, if nums[cur] == target, then we have the target already in the array, return cur. If nums[cur]>target, then the target should
+be inserted right before the current element, which in place of the current element, has an index of cur. If nums[cur]<target, then target
+should be inserted right after the current element, its index should be cur+1.
+
+Code:
+
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int start = 0, end = nums.size()-1;
+        while(end>start){
+            int mid = start + (end - start) / 2;
+            if(nums[mid]==target) return mid;
+            else if(nums[mid]>target) end = mid - 1;
+            else start = mid + 1;
+        }
+        if(nums[start]>=target) return start;
+        else return start+1;
+    }
+};
