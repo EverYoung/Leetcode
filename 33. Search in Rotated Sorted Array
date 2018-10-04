@@ -1,0 +1,48 @@
+Binary Search.
+
+Becuase there is rotation, we somehow need to have a sense how the rotation is like. 
+
+The first thought is that we can use two binary search. The first one we use it to find the start point (the smallest element) after the
+rotation and we mark it as a start. And then we can do a binary search similar to typical one, except that we should make sure the middle
+is a relative one. But this thought can be improved a lot.
+
+No matter how we rotate the array, the middle one always falls into one part of the array that in that part it follows strictly acsending 
+order, and by comparing the middle element with the first and the last element we can tell which part middle element is in. Originally, 
+when there is no rotation, there should be nums[left] < nums[mid] < nums[right]. However, if there is rotation, then this inequation 
+changes as how far we rotate. If the array wasn't rotated a lot, then the first element should be a larger one and the middle one should be
+still small, then we have nums[mid] < nums[left], and the right part after middle should follow ascending order. If the array was rotated
+a lot, then we have nums[mid] > nums[right], and the left part before middle should follow ascending order. In the ascending part we can 
+implement a typical binary search, and in the other part, we can follow the above process and do the search. 
+
+Code:
+
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int n = nums.size();
+        int left = 0, right = n-1;
+        while(left<=right){
+            int mid = left + (right - left) / 2;
+            if(nums[mid]==target) return mid;
+            
+            //Case 1: After rotation, nums[mid] is in the left part
+            if(nums[mid] > nums[right]){
+                if(target<nums[mid] && target>=nums[left]) right = mid - 1;
+                else left = mid + 1;
+            }
+            
+            //Case 2: After rotation, nums[mid] is in the right part
+            else if(nums[mid] < nums[left]){
+                if(target>nums[mid] && target<=nums[right]) left = mid + 1;
+                else right = mid - 1;
+            }
+            
+            //Case 3: No rotation
+            else{
+                if(target>nums[mid]) left = mid + 1;
+                else right = mid - 1;
+            }
+        }
+        return -1;
+    }
+};
