@@ -1,0 +1,25 @@
+Binary Search. Follow up problem of Find Minimum in Rotated Sorted Array. Take duplicate values into consideration.
+
+Similar to the idea of the basic version of this problem, we compare middle to the right and see which half we will go.
+But as there can be duplicate values, maybe the rightmost element equals to the middle and in this case we don't know the order between the
+middle one and the right one.
+Since it is a duplicate value, if we skip it, there is still at least one of this value in the sub-array we can find.
+So if the rightmost equals to the middle, we skip the rightmost one.
+
+Code:
+
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        if(nums.size() == 1) return nums[0];
+        int left = 0, right = nums.size() - 1;
+        while(left < right){
+            if(nums[left] < nums[right]) return nums[left];
+            int mid = left + (right - left) / 2;
+            if(nums[mid] > nums[right]) left = mid + 1;
+            else if(nums[mid] < nums[right]) right = mid;
+            else right--;
+        }
+        return nums[left];
+    }
+};
