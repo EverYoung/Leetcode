@@ -40,3 +40,7 @@ public:
         return res;
     }
 };
+---------------------------------------------------------------------------------------------------------
+Another idea is to use only one binary search code. 
+Finding the starting position is the same. But when we find the ending position we can find the starting position of (target+1) 
+and then minus 1.
