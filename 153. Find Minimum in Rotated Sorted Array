@@ -1,0 +1,29 @@
+Binary Search. 
+
+The key point is to decide how the array has been rotated. Think about the rotation, the rotation keeps making the leftmost element larger
+and the rightmost element smaller.
+First, if the leftmost element is smaller than the rightmost value, this array has not been rotated. Then directly return the leftmost one.
+Else the array must been rotated. So we look at the rightmost element and the middle element.
+If the middle element is bigger than the rightmost element, then it must be that the large element on the right of the original array has 
+been rotated to the middle, which means that the samllest element (the leftmost one in the original array) must be in the right half.
+Else if the middle element is smaller than the rightmost element, similarly we can see that the smallest element must not been rotated to
+the middle yet, so it must be in the left half.
+
+Code:
+
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        int left = 0, right = nums.size()-1;
+        while(left<right){
+            if(nums[left] < nums[right]) return nums[left];
+            
+            int mid = left + (right - left) / 2;
+            if(nums[mid] < nums[right])
+                right = mid;
+            else if(nums[mid] > nums[right])
+                left = mid + 1;
+        }
+        return nums[left];
+    }
+};
