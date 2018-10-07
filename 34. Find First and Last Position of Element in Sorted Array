@@ -1,0 +1,42 @@
+Binary Search.
+
+We can use two binary search, to respectively find the starting position and the ending position.
+
+To find the starting position:
+When nums[mid] < target, the starting position must be in the right half;
+When nums[mid] >= target, the starting position must be in the left half of the middle itself.
+
+To find the ending position:
+When nums[mid] > target, the ending position must be in the left half;
+When nums[mid] <= mid, the ending position must be in the right half or the middle itself.
+Notice that when we compute the middle, it is always rounded to the lower integer because of the / computation. To avoid being stuck by
+this when we come to the sub-array with length of 2, we can make the middle always rounded to the higher integer by plus 1.
+
+Code:
+
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        vector<int> res(2, -1);
+        if(nums.size() == 0) return res;
+        int left = 0, right = nums.size() - 1;
+        while(left < right){
+            int mid = left + (right - left) / 2;
+            if(nums[mid] >= target) right = mid;
+            else left = mid + 1;
+        }
+        //If we couldn't find the starting position, target must not exist in the array
+        if(nums[left] != target) return res;
+        else res[0] = left;
+        
+        //Left is already point to the starting point, we don't have to initialize it to 0
+        right = nums.size() - 1;
+        while(left < right){
+            int mid = left + (right - left) / 2 + 1;
+            if(nums[mid] <= target) left = mid;
+            else right = mid - 1;
+        }
+        res[1] = left;
+        return res;
+    }
+};
