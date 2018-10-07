@@ -1,0 +1,57 @@
+Binary Search.
+
+Typical idea:
+Look at the middle element and the element right next to it (both left or right are acceptable I think), suppose the right one. 
+If middle one is larger, then peak must be on the left half including middle itself, since the value is going down to the right.
+Else peak must on the right half, since the value is going up to the right.
+
+Code:
+
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        if(nums.size() == 0) return 0;
+        int left = 0, right = nums.size() - 1;
+        while(left < right){
+            if(nums[left] > nums[left+1]) return left;
+            if(nums[right] > nums[right-1]) return right;
+            int mid = left + (right - left) / 2;
+            if(nums[mid] > nums[mid+1]) right = mid;
+            else if(nums[mid] < nums[mid+1]) left = mid + 1;
+        }
+        return left;
+    }
+};
+
+My own thought:
+Compare mid to the leftmost and the rightmost elements, there might be 3 cases:
+Case 1: The middle element is larger than both the rightmost and the leftmost elements, which indicates that peak is not the side elements
+and it's in the middle, so we ignore the leftmost and the rightmost elements.
+Case 2: The rightmost element is larger than the middle one. In this case, peak can be the rightmost element itself or between the it and 
+the middle element. 
+Case 3: Similar to case 2, now it's the leftmost one larger than the middle.
+
+Case 2 and case 3 are not mutually exclusive, and because of the + operation when we compute the middle, we should take case 2 and consider
+the rightmost first, which can terminate the search properly.
+
+Code:
+
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        if(nums.size() == 0) return 0;
+        int left = 0, right = nums.size() - 1;
+        while(left < right){
+            if(nums[left] > nums[left+1]) return left;
+            if(nums[right] > nums[right-1]) return right;
+            int mid = left + (right - left) / 2;
+            if(nums[right] < nums[mid] && nums[left] < nums[mid]){
+                left++;
+                right--;
+            }
+            else if(nums[right] >= nums[mid]) left = mid + 1;
+            else if(nums[left] >= nums[mid]) right = mid - 1;
+        }
+        return left;
+    }
+};
