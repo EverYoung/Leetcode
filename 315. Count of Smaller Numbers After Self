@@ -1,0 +1,36 @@
+1. Binary Search.
+
+This idea is to keep a sorted array of the orginal one, and for each element in the original array, we first use binary search in the 
+sorted array to find its index to insert, which also indicates how many elements are after it in the original array. We iterate from the
+back to the front of the original array. Once we find its index, we record the index and push this element into its position in sorted
+array according to index.
+
+Code:
+
+class Solution {
+public:
+    vector<int> countSmaller(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> res;
+        vector<int> sorted;
+        for(int i = n-1; i >= 0; --i){
+            int index = findIndex(sorted, nums[i]);
+            res.insert(res.begin(), index);
+            sorted.insert(sorted.begin() + index, nums[i]);
+        }
+        return res;
+    }
+    
+    int findIndex(vector<int> sorted, int target){
+        if(sorted.size() == 0) return 0;
+        int left = 0, right = sorted.size() - 1;
+        if(sorted[left] >= target) return 0;
+        if(sorted[right] < target) return sorted.size();
+        while(left < right){
+            int mid = left + (right - left) / 2;
+            if(sorted[mid] >= target) right = mid;
+            else left = mid + 1;
+        }
+        return left;
+    }
+};
