@@ -34,3 +34,52 @@ public:
         return left;
     }
 };
+
+2. Merge Sort
+
+The idea is that we count when we merge. Each time we only count for what's in the left half and count in right half, which is naturally
+since we need to count those elements smaller on the right. We store the original array in pair, so that we know the original order.
+Each time when we merge, we start from the start of both half. And if the element in the left half is bigger than right half, we put the
+element in the right half into the sorted array. Else, we put the left element into the sorted array and meanwhile we compute how far 
+the pointer in the right half has gone. The distance indicates how many elements in the right half so far are smaller than the pointed 
+element in the left half.
+
+Code:
+
+class Solution {
+public:
+    typedef pair<int, int> p;
+    vector<int> countSmaller(vector<int>& nums) {
+        int n = nums.size();
+        vector<p> numsPair(n);
+        vector<p> numsPairCopy(n);
+        vector<int> res(n);
+        for(int i = 0; i < n; i++){
+            numsPair[i] = p(nums[i], i);
+            numsPairCopy[i] = numsPair[i];
+        }
+        mergeAndCount(numsPair, numsPairCopy, 0, n-1, res);
+        return res;
+    }
+    
+    void mergeAndCount(vector<p>& numsPair, vector<p>& numsPairCopy, int start, int end, vector<int>& res){
+        if(start >= end) return;
+        int mid = start + (end - start) / 2;
+        mergeAndCount(numsPair, numsPairCopy, start, mid, res);
+        mergeAndCount(numsPair, numsPairCopy, mid + 1, end, res);
+        int i = start, j = mid + 1, k = start;
+        while(k <= end){
+            if(j > end || i <= mid && numsPair[i].first <= numsPair[j].first){
+                numsPairCopy[k] = numsPair[i];
+                res[numsPair[i].second] += j - mid - 1;
+                i++;
+            }
+            else{
+                numsPairCopy[k] = numsPair[j];
+                j++;
+            }
+            k++;
+        }
+        numsPair = numsPairCopy;
+    }
+};
