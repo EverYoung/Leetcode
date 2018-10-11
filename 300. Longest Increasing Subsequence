@@ -1,0 +1,42 @@
+Dynamic Programmming & Binary Search.
+
+Keep an dp array recording the minimum value that subsequence of each lengthes end up with. We iterate throught the given array, each time 
+we use binary search to find a appropriate index in dp that we should replace it with our current value (update it to the minimum value).
+To avoid binary search terminate and return an wrong index when dp's length is 1, we alwasy keep a INT_MAX at the end of dp, and when as
+the answer for this problem, we return dp's length - 1. 
+
+The whole algorithm takes O(nlogn) time and O(n) space.
+
+Code:
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0) return 0;
+        vector<int> dp;
+        dp.push_back(nums[0]);
+        dp.push_back(INT_MAX);
+        for(int i = 1; i < n; i++){
+            //for(int j = 0; j < dp.size(); j++){
+            //    if(nums[i] > dp[j] && j == dp.size()-1) dp.push_back(nums[i]);
+            //    else if(nums[i] < dp[j] && (j == 0 || nums[i] > dp[j-1])) dp[j] = nums[i];
+            //}
+            int index = binarySearch(dp, nums[i]); 
+            dp[index] = nums[i];
+            if(index == dp.size()-1) dp.push_back(INT_MAX);
+        }
+        return dp.size() - 1;
+    }
+    
+    int binarySearch(vector<int>& dp, int target)
+    {   
+        int left = 0, right = dp.size() - 1;
+        while(left < right){
+            int mid = left + (right - left) / 2;
+            if(dp[mid] >= target) right = mid;
+            else left = mid + 1;
+        }
+        return left;
+    }
+};
