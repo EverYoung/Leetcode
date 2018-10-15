@@ -1,0 +1,31 @@
+Dynamic Programming + Binary Search.
+
+This problem is similar to the problem Find Longest Subsequence.
+We use an array dp to store the minimum height requirement for dolls with different length.
+First sort the envelopes with width to make sure that when we iterate through them, width won't be the factor that prevent current one to 
+doll the previous one, so that we can only focus on height. Also if envelopes have same width but different height, they cannot doll each
+other, so we should put envelopes with longer height first so that when we consider a shorter height one, it will not count to be able to
+doll envelopes with same width.
+
+Code:
+
+class Solution {
+public:
+    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+        int n = envelopes.size();
+        if(n == 0) return 0;
+        sort(envelopes.begin(), envelopes.end(), [&](const pair<int, int>& a,  const pair<int, int>& b){
+            if(a.first < b.first) return true;
+            else if (b.first < a.first) return false;
+            else if(a.second < b.second) return false;
+            else return true;
+        });
+        vector<int> dp;
+        for(int i = 0; i < n; i++){
+            int index = lower_bound(dp.begin(), dp.end(), envelopes[i].second) - dp.begin();
+            if(index == dp.size()) dp.push_back(envelopes[i].second);
+            else dp[index] = envelopes[i].second;
+        }
+        return dp.size();
+    }
+};
