@@ -1,0 +1,26 @@
+Use two pointers, one from the front and one from the back, to gradually narrow down the possible candidate for celebrity, using knows 
+relation. The rule is as following: Say we have pointer left and right, if left knows right then left must not be celebrity. And if left 
+does not know right, right must not be celebrity. Once these two pointers meet each other, they must point to a possible candidate for 
+celebrity. Then we check whether the candidate knows someone or whether thare is someone does not know him/her.
+
+Code:
+
+// Forward declaration of the knows API.
+bool knows(int a, int b);
+
+class Solution {
+public:
+    int findCelebrity(int n) {
+        int left = 0, right = n-1;
+        while(left < right){
+            if(knows(left, right)) left++;
+            else right--;
+        }
+        
+        for(int i = 0; i < n; i++){
+            if(i == left) continue;
+            else if(!knows(i, left) || knows(left, i)) return -1;
+        }
+        return left;
+    }
+};
