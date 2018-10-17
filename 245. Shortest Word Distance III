@@ -1,0 +1,30 @@
+Array problem.
+
+Similar problem to Shortest Word Distance, but this one count same words in the string array as individual words.
+
+The solution is pretty much the same to Shortest Word Distance, we simply use two pointers and go through the whole array once. The 
+difference is that when word1 and word2 are the same, the update operation for pointers may be a little difference. We should alway let
+ptr2 point to the later one and the ptr1 to the former one.
+
+Code:
+
+class Solution {
+public:
+    int shortestWordDistance(vector<string>& words, string word1, string word2) {
+        int ptr1 = -1, ptr2 = -1, minDistance = INT_MAX;
+        for(int i = 0; i < words.size(); i++){
+            if(words[i] == word1){
+                ptr1 = i;
+                if(ptr2 != -1) minDistance = min(minDistance, abs(ptr1 - ptr2));
+            }
+            if(words[i] == word2){
+                if(word1 == word2){
+                    ptr1 = ptr2;
+                }
+                ptr2 = i;
+                if(ptr1 != -1) minDistance = min(minDistance, abs(ptr1 - ptr2));
+            }
+        }
+        return minDistance;
+    }
+};
