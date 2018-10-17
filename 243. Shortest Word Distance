@@ -15,10 +15,11 @@ public:
         int minDistance = INT_MAX;
         vector<int> index1 = hashmap[word1];
         vector<int> index2 = hashmap[word2];
-        for(int i = 0; i < index1.size(); i++){
-            for(int j = 0; j < index2.size(); j++){
-                minDistance = min(minDistance, abs(index1[i] - index2[j]));
-            }
+        int ptr1 = 0, ptr2 = 0;
+        while(ptr1 < index1.size() && ptr2 <index2.size()){
+            minDistance = min(minDistance, abs(index1[ptr1] - index2[ptr2]));
+            if(index1[ptr1] < index2[ptr2]) ptr1++;
+            else ptr2++;
         }
         return minDistance;
     }
