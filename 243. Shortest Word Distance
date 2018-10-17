@@ -1,0 +1,53 @@
+Array problem.
+
+First idea (which is not a good one) is that we can first create a hashmap store each word's index in the string array, and then we find 
+the smallest difference in both word1's and word2's indexes.
+
+Code:
+
+class Solution {
+public:
+    int shortestDistance(vector<string>& words, string word1, string word2) {
+        unordered_map<string, vector<int>> hashmap;
+        for(int i = 0; i < words.size(); i++){
+            hashmap[words[i]].push_back(i);
+        }
+        int minDistance = INT_MAX;
+        vector<int> index1 = hashmap[word1];
+        vector<int> index2 = hashmap[word2];
+        for(int i = 0; i < index1.size(); i++){
+            for(int j = 0; j < index2.size(); j++){
+                minDistance = min(minDistance, abs(index1[i] - index2[j]));
+            }
+        }
+        return minDistance;
+    }
+};
+
+A better solution exists and only takes one loop going through the whole array. We use two pointers to indicate the positions of word1 and 
+word2 in the string array. Every time we find word1 or word2 we change the pointer to the corresponding position (index), and if both the
+pointers are pointing to somewhere in the array (which means that we already find word1 and word2 position in the array), we calculate the
+distance of the current pointers. We keep recording the minimum distance through out the process and we get the answer.
+
+Code:
+
+class Solution {
+public:
+    int shortestDistance(vector<string>& words, string word1, string word2) {
+        int ptr1 = -1, ptr2 = -1, minDistance = INT_MAX;
+        for(int i = 0; i < words.size(); i++){
+            if(words[i] == word1){
+                ptr1 = i;
+                if(ptr2 != -1) minDistance = min(minDistance, abs(ptr1 - ptr2));
+            }
+            if(words[i] == word2){
+                ptr2 = i;
+                if(ptr1 != -1) minDistance = min(minDistance, abs(ptr1 - ptr2));
+            }
+            
+        }
+        return minDistance;
+    }
+};
+
+All problem finding distance between two element in an array can be transfer into a problem like this and be solved using the method above.
