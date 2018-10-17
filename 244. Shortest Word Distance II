@@ -1,0 +1,44 @@
+Array problem
+
+Follow up of problem Shortest Word Distance. This problem requires to write a class that stores the string array. Specifically it requires 
+to write a constructor for the class and implement the function computing the shortest distance.
+
+Because this problme doesn't restrict what kind of data structure we use to store the string array, a good idea is to store the string 
+array into a hashmap, whose keys are the word string and the values are a vector storing indexes of that word in the string array. Using a
+hashmao enable us to focus on the indexes of the given words in the function computing shortest distance instead of wastely going through
+other elements' indexes.
+
+As for the shortest distance function, the problem now turns into compute the smallest difference of elements in two arrays. The idea for 
+this problem is that we keep to pointers for each array respectively, that is the array storing word1's indexes and the array storing 
+word2's. So while both pointers do not reach the end of their array, we keep computing the difference of the elements they point to. After 
+that we compare these two elements, to decrease the difference, we should make the smaller one larger to get closer to the larger one. So
+we move the pointer pointing smaller element forward. (The indexes in array follows the ascending order since we iterate from front to end 
+when we create the hashmap). We keep recording the smaller difference and at the end we will get the the minimum difference which is the 
+shortest distance.
+
+Code:
+
+class WordDistance {
+public:
+    WordDistance(vector<string> words) {
+        for(int i = 0; i < words.size(); i++){
+            hashmap[words[i]].push_back(i);
+        }
+    }
+    
+    int shortest(string word1, string word2) {
+        int minDistance = INT_MAX;
+        int ptr1 = 0, ptr2 = 0;
+        vector<int> index1 = hashmap[word1];
+        vector<int> index2 = hashmap[word2];
+        while(ptr1 < index1.size() && ptr2 <index2.size()){
+            minDistance = min(minDistance, abs(index1[ptr1] - index2[ptr2]));
+            if(index1[ptr1] < index2[ptr2]) ptr1++;
+            else ptr2++;
+        }
+        return minDistance;
+    }
+
+private: 
+    unordered_map<string, vector<int>> hashmap;
+};
