@@ -1,0 +1,24 @@
+Array problem.
+
+Similar to Contains Duplicate, but this one also take the absolute difference of two duplicate elements into consideration. 
+
+First thought was trying to find a structure that can storing the latest index for each element. Since we now considering every distinct
+element in the array, we cannot simply use pointers. Consequently, we use a hashmap. We iterate through the array, and if the hashmap does
+not contain the current element, we insert it and its index into the hashmap. If the current element has its former index and the current 
+index forming an absolute difference larger than k, we update the index to the current one. However, if the difference is smaller than k, 
+we directly return true.
+
+Code:
+
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        unordered_map<int, int> hashmap;
+        for(int i = 0; i < nums.size(); i++){
+            if(hashmap.find(nums[i]) == hashmap.end()) hashmap.insert(pair<int, int>(nums[i], i));
+            else if(i - hashmap[nums[i]] <= k) return true;
+            else hashmap[nums[i]] = i;
+        }
+        return false;
+    }
+};
