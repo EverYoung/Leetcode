@@ -1,0 +1,14 @@
+Array problem.
+
+To find the duplicate elements in an array, we can make use of the feature of set. Set does not store duplicate elements, so when we try to
+store the whole array into a set, if there are duplicates, the size of the set must not be the same as the size of the original array.
+
+Code:
+
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        if(nums.size()<2) return false;
+        return unordered_set<int>(nums.begin(), nums.end()).size() < nums.size();
+    }
+};
