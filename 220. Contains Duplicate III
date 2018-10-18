@@ -1,0 +1,20 @@
+Array problem.
+
+Similar problem to Contains Duplicate II. But this time absolute difference between elements' values are considered. The first idea to solve this problem is pretty similar to the previous version. We keep a set that only stores k elements and as we iterate through the whole array, we insert into and erase elements from the set to keep the k elements. As for the elements' absolute difference t. We can use lower_bound of nums[i]-t to find the smallest element x that satisfy
+nums[i] - x <= t. Notice that x might be larger than nums[i], then if x - nums[i] <= t is also satisfied. Then the absolute difference between x and nums[i] must be within t, and we return true.
+
+Code:
+
+class Solution {
+public:
+    bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+        set<long long> s;
+        for(int i = 0; i < nums.size(); i++){
+            if(i > k) s.erase((long long)nums[i-k-1]);
+            auto lower = s.lower_bound((long long)nums[i] - t);
+            if(lower != s.end() && *lower - nums[i] <= t) return true;            
+            s.insert(nums[i]);
+        }
+        return false;
+    }
+};
