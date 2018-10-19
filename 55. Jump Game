@@ -1,0 +1,26 @@
+This problem can be solved using dynamice programming, but there also exist a solution without using dynamic programming.
+
+If we want to reach the end, the only obstacle is the 0 values at some indexes. When we cannot jump over the position with 0 value, then we
+are stuck and can never get to the end. So, the problem can be transfered into judging whether each position with 0 value can be jumped 
+over from the former position.
+
+Code:
+
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        if(nums.size()<2) return true;
+        int zero = 0, n = nums.size();
+        bool res = true;
+        for(; zero<n-1; zero++){
+            if(nums[zero]==0){
+                bool temp = false;
+                for(int i=0; i<zero; i++){
+                    if(nums[i]>zero-i) temp = true;
+                }
+                res = res && temp;
+            }
+        }
+        return res;
+    }
+};
