@@ -1,0 +1,31 @@
+Array problem.
+
+A straightforward solution is to use brute-force, if the next price is higher than the current price we use a loop to go through the prices
+following and compute the maximum profit. This takes O(n^2) time.
+
+A better solution is to use two pointers, one(ptr1) points to the buy price and the other(ptr2) points to sell price. We let ptr2 scan 
+throught the whole array, if the current price ptr2 pointing to is higher than the last price, it means the price goes up and we compute
+profit. Else if current price is lower than the last one, the profit is definitely less than if we sell it on the previous day. Instead, 
+at this point we compare whether the current price can lead to a possible larger profit in the future, which means we compare the current
+price with the price ptr1 pointing to. If so, ptr1 points to the current price, and ptr2 goes on scanning.
+
+Code:
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        if(prices.size()<1) return 0;
+        int profit = 0;
+        int ptr1 = 0, ptr2 = 1;
+        while(ptr2 < prices.size()){
+            if(prices[ptr2] < prices[ptr2-1]){
+                if(prices[ptr2] < prices[ptr1]) ptr1 = ptr2;
+            }
+            else{
+                profit = max(profit, prices[ptr2] - prices[ptr1]);
+            }
+            ptr2++;
+        }
+        return profit;
+    }
+};
