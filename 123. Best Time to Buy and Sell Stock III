@@ -1,0 +1,52 @@
+Dynamic Programming
+
+Let OPT(k, i) be the max profit we can get on i-th day when we still have k chances of transactions. Then there are basically 2 cases
+Case 1: We hold the stock on i-th day, then so far the profit is how much we made on the previous day with the same chances of transactions.
+        OPT(k, i) = OPT(k, i-1).
+Case 2: We sell the stock on i-th day, then the profit depends on when we bought the stock. Let m be the day we bought the stock, where
+        0 <= m <= i-1. OPT(k, i) = max(OPT(k-1, m) + prices[i] - prices[m]). For each m, we actaully only need to compute the result of 
+        OPT(k-1, m) - prices[m], which can be computed and stored when we iterate with i. So if at each i we compute OPT(k-1, i) - prices[i],
+        and we stored diff = max(diff, OPT(k-1, i) - prices[i]), then the recurrence relation will be OPT(k, i) = prices[i] + diff.
+        
+Code:
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if(n < 2) return 0;
+        vector<vector<int>> dp(3, vector<int>(n, 0));
+        for(int k = 1; k < 3; k++){
+            int diff = dp[k-1][0] - prices[0];
+            for(int i = 1; i < n; i++){
+                dp[k][i] = max(dp[k][i-1], prices[i] + diff);
+                diff = max(diff, dp[k-1][i] - prices[i]);
+            }
+        }
+        return dp[2][n-1];
+    }
+};
+
+This can be generalized into a version fit for k transactions, just initialize memo with (k, n).
+
+Another solution seems to be a extremely concise version of DP. Actually we can tranfer the buy ans sell stock process into maximize the 
+formula -price1 + price2 - price3 + price4. So we iterate through all the prices in order, and every time we take the maximum of 
+-price1 + price2 - price3 + price4, -price1 + price2 - price3, -price1 + price2, -price1 respectively, and eventually when we get the 
+maximum of each part, then we get the maximum of -price1 + price2 - price3 + price4 as the result.
+
+Code:
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int hold1 = INT_MIN, hold2 = INT_MIN;
+        int sell1 = 0, sell2 = 0;
+        for(int i = 0; i < prices.size(); i++){
+            sell2 = max(sell2, hold2 + prices[i]);
+            hold2 = max(hold2, sell1 - prices[i]);
+            sell1 = max(sell1, hold1 + prices[i]);
+            hold1 = max(hold1, -prices[i]);
+        }
+        return sell2;
+    }
+};
