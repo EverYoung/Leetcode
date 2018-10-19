@@ -1,0 +1,48 @@
+Dynamic Programming
+
+Use an array to store the jumps needed to reach each position. 
+
+Code:
+
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        if(n<2) return 0;
+        vector<int> jumps(n, 0);
+        int farthest = nums[0], nextFarthest = 0, jump = 1;
+        for(int i = 1; i < n;){
+            if(i <= farthest){
+                jumps[i] = jump;
+                nextFarthest = max(nextFarthest, nums[i] + i);
+                ++i;
+            }
+            else{
+                farthest = nextFarthest;
+                ++jump;
+            }
+        }
+        return jumps[n-1];
+    }
+};
+
+Actually, this can be done without using an extra array to store the result:
+
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        if(n<2) return 0;
+        vector<int> jumps(n, 0);
+        int farthest = nums[0], nextFarthest = 0, jump = 1, cur = 1;
+        while(farthest >= cur){
+            if(farthest >= n-1) return jump;
+            while(cur <= farthest){
+                nextFarthest = max(nextFarthest, nums[cur] + cur);
+                ++cur;
+            }
+            farthest = nextFarthest;
+            ++jump;
+        }
+    }
+};
