@@ -29,3 +29,22 @@ public:
         return third != -1;
     }
 };
+
+And the code and be simplified into this:
+
+class Solution {
+public:
+    bool increasingTriplet(vector<int>& nums) {
+        int n = nums.size();
+        if(n < 3) return false;
+        int first = 0, second = -1;
+        for(int i = 1; i < n; i++){
+            if(nums[i] <= nums[first]) first = i;
+            else if(nums[i] > nums[first]){
+                if(second == -1 || nums[i] <= nums[second]) second = i;
+                else return true;
+            }
+        }
+        return false;
+    }
+};
