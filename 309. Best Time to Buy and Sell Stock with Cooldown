@@ -1,0 +1,33 @@
+Dynamic Programming
+
+When we have cooldown, we have one more state when we consider subproblems. At each day, we can either buy, sell or cooldown. Actually, 
+when we cooldown, we do nothing, so we can find a way to skip this state. That is when we buy a share, we must have sold previous one out
+and have a cooldown, so instead of using sell[i-1], we use sell[i-2] to compute the new total profit after buy a new share.
+
+In this series problems, dynamic programming usually should keep a memo respectively for each state. In this problem, a straightforward
+thought is that we should keep 3 array as memo, buy[i], sell[i] and cooldown[i]. However, we simplify these into 2, buy[i], sell[i].
+The recurrence relation should be:
+buy[i] = max(sell[i-2] - prices[i], buy[i-1]);
+sell[i] = max(buy[i-1] + prices[i], sell[i-1]);
+
+And we can still simplify this into using 4 variables, we can have two variable for buy[i] and buy[i-1] and also two variables for sell[i]
+and sell[i-1]. We compute buy first before we update those two variables of sell, so that when we come to buy[i] and buy[i-1], those two
+variables are still storing sell[i-1] and sell[i-2].
+
+Code:
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        int curBuy = INT_MIN, curSell = 0;
+        int prevBuy = 0, prevSell = 0;
+        for(int i = 0; i < n; ++i){
+            prevBuy = curBuy;
+            curBuy = max(prevSell - prices[i], prevBuy);
+            prevSell = curSell;
+            curSell = max(prevBuy + prices[i], prevSell);
+        }
+        return curSell;
+    }
+};
