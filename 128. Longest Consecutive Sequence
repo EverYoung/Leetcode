@@ -1,0 +1,36 @@
+The straight forward brute-force solution is to loop the whole array, and starting with each elements, usa an inner loop to find the each 
+possible consecutive larger element in the array. To find the possible element in the array takes O(n) time, and there are at most n 
+possible element needed to find, which taking O(n) times. And for the outer loop, it takes O(n) time. So in total, this solution cost
+O(n^3) time.
+
+An O(n) solution is based on the brute-force solution. We use a set to store all the elements in the array, since first this can eliminate
+duplicates and second finding an element in a set takes O(1) time. And each time we find want to find a longest consecutive subsequence, we
+first find is there an element that is less than the current one by 1 in the array. If so, then the subsequence starting with the smaller
+element should be longer than the one starting with current element. Consequently, we don't need to find the subsequence for current 
+element.
+
+Code:
+
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        int n = nums.size();
+        int longest = 0;
+        unordered_set<int> s;
+        for(int num : nums){
+            s.insert(num);
+        }
+        for(int num : nums){
+            if(s.find(num-1) == s.end()){
+                int current = 1;
+                int curNum = num;
+                while(s.find(curNum + 1) != s.end()){
+                    ++current;
+                    ++curNum;
+                }
+                longest = max(longest, current);
+            }
+        }
+        return longest;
+    }
+};
