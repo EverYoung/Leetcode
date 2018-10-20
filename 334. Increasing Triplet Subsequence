@@ -9,6 +9,8 @@ nums[i], it is still an increasing subsequence.
 assigned), then we update second as i. The reason is similar as we deal with first pointer.
 3. If nums[i] > nums[second], then nums[i] could only be the third one. So if nums[i] < nums[third] or third == -1, we update third as i.
 
+Finally, if third pointer is assigned, then we a increasing triplet subsequence exists and we return true; otherwise false.
+
 Code:
 
 class Solution {
