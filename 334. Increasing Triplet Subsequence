@@ -1,0 +1,29 @@
+Use 3 pointers to record the position of possible first, second, third elements in a incresing tripet subsequence, go through the whole 
+array and if we can assign these three pointers to somewhere in the array, then there exists an increasing triplet subsequence. The 
+assignment of the 3 pointers follow the follwoing rules:
+
+When we come to an element at index i:
+1. If nums[i] < nums[first], then we update first as i, since every increasing subsequence contains nums[first], if we exchange it to 
+nums[i], it is still an increasing subsequence.
+2. If nums[i] > nums[first], then nums[i] could possibly be the second or third one. If nums[i] < nums[second] or second == -1 (not
+assigned), then we update second as i. The reason is similar as we deal with first pointer.
+3. If nums[i] > nums[second], then nums[i] could only be the third one. So if nums[i] < nums[third] or third == -1, we update third as i.
+
+Code:
+
+class Solution {
+public:
+    bool increasingTriplet(vector<int>& nums) {
+        int n = nums.size();
+        if(n < 3) return false;
+        int first = 0, second = -1, third = -1;
+        for(int i = 1; i < n; i++){
+            if(nums[i] < nums[first]) first = i;
+            else if(nums[i] > nums[first]){
+                if(second == -1 || nums[i] < nums[second]) second = i;
+                else if(nums[i] > nums[second] && (third == -1 || nums[i] < nums[third])) third = i;
+            }
+        }
+        return third != -1;
+    }
+};
