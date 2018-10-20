@@ -1,0 +1,36 @@
+The best solution to solve this problem is using two pointers. The two pointers solution means that we can scan through the given array 
+once and also using variables to record what we need instead using an extra array. So two pointers solution expect to solve the problem
+in O(n) time and O(1) space complexity.
+
+The two pointers solution use two pointers left and right. Left pointer goes from left to right, and the right pointer goes from right to
+left. When left pointer points to the same position as right, the loop terminates and at this time the whole array was iterated once. We 
+keep storing and updating the minimum height of the heights pointed by 2 pointers. And each time when we move the pointer, we move the one 
+point to the smaller height. After move there are two cases:
+
+Case1 : the new height is smaller than the minimum height, then this position can trap minHeight - height[left] amount of rain, add it up.
+Case2 : the new height is larger than the minimum height, then we update minHeight.
+
+Code:
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        if(n < 3) return 0;
+        int totalRain = 0;
+        int left = 0, right = n - 1, minHeight = min(height[left], height[right]);
+        while(left < right){
+            if(height[left] <= height[right]){
+                ++left;
+                if(height[left] > minHeight) minHeight = min(height[left], height[right]);
+                else totalRain += minHeight - height[left];
+            }
+            else{
+                --right;
+                if(height[right] > minHeight) minHeight = min(height[left], height[right]);
+                else totalRain += minHeight - height[right];
+            }
+        }
+        return totalRain;
+    }
+};
