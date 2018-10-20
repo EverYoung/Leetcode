@@ -1,0 +1,20 @@
+This problem can be solved easily using two pointers, one start from the front going to the end, the other going in the reverse direction.
+Each time the two heights pointed by these pointers form a volume, and we compute it each time and keep the larger one. Then the current
+volume is limited by the shorter height, so the only possible way to increase volume is to find a larger height, so we move the pointer
+pointing the shorter height forward.
+
+Code:
+
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int maxWater = 0;
+        int left = 0, right = height.size()-1;
+        while(left < right){
+            maxWater = max(maxWater, (right - left) * min(height[left], height[right]));
+            if(height[left] <= height[right]) ++left;
+            else --right;
+        }
+        return maxWater;
+    }
+};
