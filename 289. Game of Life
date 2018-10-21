@@ -1,0 +1,76 @@
+If we use extra space to store the updated board, this problem will be much easier since only thing we need to accomplish is to build up
+a logical way to update the board. However, it is required to implement in place. Observing the elements in the board, we can find that
+there is no logical relation between each elements, so it is impossible that we use pointers to record the key positions. Reconsider the 
+obstacle for us to in place update the board, the thing is that if we update an element, then we lost it when we need it to compute for 
+other elements. So if we find out a way to both store the original values and the updated values, then the problem is solved. That's where
+the idea of bitwise manipulation come out. The original value use 1 bit to store (1 or 0), if we use 2 bits to store the value, 1 bit for
+the updated value and the other for original value, we can store what we need at the same time in the same board. Only thing we need to 
+do eventually is to shift all the value to the right, so that they only contain the updated values.
+
+Code:
+
+class Solution {
+public:
+    void gameOfLife(vector<vector<int>>& board) {
+        int n = board.size();
+        if(n == 0) return;
+        int m = board[0].size();
+        
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < m; ++j){
+                int count = 0;
+                if(j > 0) {
+                    count += (board[i][j-1] & 1);
+                    if(i > 0) count += (board[i-1][j-1] & 1);
+                    if(i < n - 1) count += (board[i+1][j-1] & 1);
+                }
+                if(j < m - 1) {
+                    count += (board[i][j+1] & 1);
+                    if(i > 0) count += (board[i-1][j+1] & 1);
+                    if(i < n - 1) count += (board[i+1][j+1] & 1);
+                }
+                if(i > 0) count += (board[i-1][j] & 1);
+                if(i < n - 1) count += (board[i+1][j] & 1);
+                
+                if(board[i][j] == 0 && count == 3) board[i][j] |= 2;
+                else if(board[i][j] == 1 && (count == 2 || count == 3)) board[i][j] |= 2;
+            }
+        }
+        
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < m; ++j){
+                board[i][j] >>= 1;
+            }
+        }
+    }
+};
+
+A neater version is as follow. This one count board[i][j] itself so we don't need that much logical judgement.
+
+class Solution {
+public:
+    void gameOfLife(vector<vector<int>>& board) {
+        int n = board.size();
+        if(n == 0) return;
+        int m = board[0].size();
+        
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < m; ++j){
+                int count = 0;
+                for(int k = max(i-1, 0); k < min(i+2, n); ++k){
+                    for(int h = max(j-1, 0); h < min(j+2, m); ++h){
+                        count += board[k][h] & 1;
+                    }
+                }
+                if(count == 3 || count - board[i][j] == 3) 
+                    board[i][j] |= 2;
+            }
+        }
+        
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < m; ++j){
+                board[i][j] >>= 1;
+            }
+        }
+    }
+};
