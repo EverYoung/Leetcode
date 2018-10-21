@@ -36,6 +36,9 @@ move once. When the two pointers point to the same number, then we reset the fas
 fast and slow pointers once at a time. When these two pointers point to the same number again, they point to the entrance of the cycle,
 which is the duplicate number.
 
+Extra explanation: entrance of a cycle have two entering edges since there is a node in the line points to the entrance and the cycle 
+also has a node points to the entrance. Thast's why when the two pointers points at the same number, that number is the entrance.
+
 Code:
 class Solution {
 public:
