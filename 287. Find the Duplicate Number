@@ -1,0 +1,58 @@
+1. Find after sorting. Time complexity: O(nlogn), space comlexity: O(1).
+
+Code:
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int ptr = 1;
+        while(ptr < nums.size()){
+            if(nums[ptr] == nums[ptr-1]) return nums[ptr];
+            else ++ptr;
+        }
+        return -1;
+    }
+};
+
+2. Using set. Time complexity： O（n), space complexity: O(n).
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        unordered_set<int> s;
+        for(int num : nums){
+            if(s.find(num) == s.end()) s.insert(num);
+            else return num;
+        }
+    }
+};
+
+3. Floyd's Tortoise and Hare (Cycle Detection)
+Consider the whole array as a line plus a cycle, the entrance of the cycle is the duplicate number. This is possible since all the 
+numbers in the array are amone 1 - n, and there are n+1 numbers, so there must be a duplicate number. And we use the number as the next
+index we go to, thus forming a cycle. To implement this algorithm, we use fast and slow pointers, fast move twice at a time while slow
+move once. When the two pointers point to the same number, then we reset the fast pointer to zero. Then at this time, we move both the
+fast and slow pointers once at a time. When these two pointers point to the same number again, they point to the entrance of the cycle,
+which is the duplicate number.
+
+Code:
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int fast = nums[nums[0]];
+        int slow = nums[0];
+        while(fast != slow){
+            fast = nums[nums[fast]];
+            slow = nums[slow];
+        }
+        
+        int ptr1 = 0;
+        int ptr2 = slow;
+        while(ptr1 != ptr2){
+            ptr1 = nums[ptr1];
+            ptr2 = nums[ptr2];
+        }
+        return ptr1;
+    }
+};
