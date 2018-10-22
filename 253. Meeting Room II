@@ -1,0 +1,49 @@
+Interval problem, Greedy algorithm, priority queue.
+
+Greedy algorithm suits for this problem. We create a new room for meeting only when the current meeting is not compatible to any of the
+rooms we already have, that is the current meeting's starting time is ealier than all of the ending time of last meetings from all rooms.
+If there is a room compatible, we put the current meeting in it instead of creating new room. To judge the compatibility, we only need to 
+compare the current starting time with the earliest ending time of all rooms. So we use a priority queue to pop out the earlist ending time
+with O(logn) time.
+
+Code:
+
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    int minMeetingRooms(vector<Interval>& intervals) {
+        if(intervals.size() == 0) return 0;
+        if(intervals.size() == 1) return 1;
+        sort(intervals.begin(), intervals.end(), [](Interval i, Interval j){return i.start < j.start;});
+        priority_queue<int, std::deque<int>, std::greater<int>> pq;
+        pq.push(INT_MAX);
+        for(Interval i : intervals){
+            int minEnd = pq.top();
+            if(i.start < minEnd){
+                pq.push(i.end);
+            }
+            else{
+                pq.pop();
+                pq.push(i.end);
+            }
+        }
+        return pq.size()-1;
+    }
+};
+
+Another solution is to use the chronological ordering. We sort the intervals both in starting time and ending time. Starting time 
+corresponding to each meeting, and ending time means the earlist ending time taken into consideration. At first, we point to the first
+element of starting time and ending time. Ending time means currently, among all the meeting the earliest ending time is that one. And
+if the current starting time is earlier than this ending time, that means it needs an extra room, and we go to the next starting time. 
+If starting time is later than the  ending time, then we can arrange this meeting after the meeting ends at the ending time and go to
+the next starting time. We don't have to creat a new room and we go to the next ending time. The algorithm terminate when all the 
+starting time are scaned.
+
