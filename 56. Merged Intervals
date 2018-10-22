@@ -1,0 +1,46 @@
+Intervals problem.
+
+This problem is pretty straightforward, since if we want to judge whether two intervals overlap each other, we only need to compare the 
+end time of the interval that starts earlier to the start time of the interval that starts later. Therefore the first thing to do is 
+to sort the given intervals by start times. After sorting, we can simply compare the end time to the start time of next interval.
+Say we now at interval i, then if intervals[i].start <= intervals[i-1].end, then they overlap. However, we need to keep track of the merged
+interval's end time and also, there may be an interval totally contained in a former one. So, we use a variable newEnd to record the merged
+end time. and the judgement should change to this: intervals[i].start <= newEnd. For newEnd, each time we take max(newEnd, intervals[i].end)
+If the two intervals do not overlap, then we append merged interval to the response, and start to consider a new interval.
+
+Code:
+
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    vector<Interval> merge(vector<Interval>& intervals) {
+        if(intervals.size() < 2) return intervals;
+        vector<Interval> res;
+        sort(intervals.begin(), intervals.end(), comparator);
+        int newStart = intervals[0].start, newEnd = intervals[0].end;
+        for(int i = 1; i < intervals.size(); i++){
+            if(intervals[i].start <= newEnd){
+                newEnd = max(newEnd, intervals[i].end);
+            }
+            else{
+                res.push_back(Interval(newStart, newEnd));
+                newStart = intervals[i].start;
+                newEnd = intervals[i].end;
+            }
+        }
+        res.push_back(Interval(newStart, newEnd));
+        return res;
+    }
+    
+    static bool comparator(Interval i, Interval j){
+        return (i.start < j.start);
+    }
+};
