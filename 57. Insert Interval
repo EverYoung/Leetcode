@@ -1,0 +1,45 @@
+1.A straightforward and intuitive solution: Takes O(n) time and O(n) space, it can be implemented in-place and takes O(1) space.
+
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        vector<Interval> res;
+        bool needMerge = false, insert = false;
+        for(Interval i : intervals){
+            if(!insert){
+                if(newInterval.end < i.start) {
+                    res.push_back(newInterval);
+                    res.push_back(i);
+                    insert = true;
+                }
+                else if(newInterval.start > i.end) res.push_back(i);
+                else{
+                    int newStart = min(i.start, newInterval.start);
+                    needMerge = i.end >= newInterval.end ? false : true;
+                    int newEnd = max(i.end, newInterval.end);
+                    res.push_back(Interval(newStart, newEnd));
+                    insert = true;
+                }
+            }
+            else if(needMerge && i.start <= res.back().end)
+                    res.back().end = max(res.back().end, i.end);
+            else res.push_back(i);
+        }
+        if(!insert) res.push_back(newInterval);
+        return res;
+    }
+};
+
+2. Use binary search to find the start time and end time position in the original intervals array. Actually it is a good idea to use
+binary search to find the insert position. However, since we also need remove and erase if we want to in-place insert, or we need to
+push_back in worst case n times. So the total time of this solution should be O(n). But also we need binary search twice, comparing to 
+the straightforward solution that take O(n) go through and modify the array, it might take longer time when running.
