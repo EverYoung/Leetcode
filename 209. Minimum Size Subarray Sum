@@ -1,0 +1,47 @@
+1. Prefix Sum + Binary Search
+
+If the array has no element, return 0. If the first element is already larger than or equal to s, return 1 because 1 is the minimum limit.
+Otherwise we compute the prefix sum ends with each number in the array. Because the array only contains positive integer, so its prefix
+sum array must be in strictly ascending order. And this is why we could use a binary search in the prefix sum array, to find a sum say sum1
+that is less than or equal to the current sum say sum2 minus s (sum2 - s), and the difference between the index where these sums ends with 
+is a candidate for the minimum length.
+
+When we compute the prefix sum, when sum is equal to s, the current index plus 1 is the first candidate. And only when the sum goes larger
+than s, we use binary search in the prefix sum array.
+
+Code:
+
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        if(nums.size() == 0) return 0;
+        if(nums[0] >= s) return 1;
+        vector<int> prefixSum;
+        int minLen = INT_MAX, sum = 0;
+        for(int i = 0; i < nums.size(); ++i){
+            sum += nums[i];
+            if(sum == s) minLen = min(minLen, i + 1);
+            if(sum > s){
+                int diff = sum - s;
+                int index = binarySearch(prefixSum, diff);
+                if(index != -1) minLen = min(minLen, i - index);
+            }
+            prefixSum.push_back(sum);
+        }
+        return minLen == INT_MAX ? 0 : minLen;
+    }
+    
+    int binarySearch(vector<int> prefixSum, int target){
+        int n = prefixSum.size();
+        if(n == 0) return -1;
+        int left = 0, right = n - 1;
+        while(left < right){
+            int mid = left + (right - left) / 2 + 1;
+            if(prefixSum[mid] == target) return mid;
+            if(prefixSum[mid] < target) left = mid;
+            else right = mid - 1;
+        }
+        if(prefixSum[left] <= target) return left;
+        else return -1;
+    }
+};
