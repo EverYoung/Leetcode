@@ -1,0 +1,16 @@
+Keep adding numbers and when we find that the sum is even smaller than the current number, it means that the former sum must be negative.
+Consequently there is no need to keep the former sum and we just keep the current number and keep on adding.
+
+Code:
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int currentSum = 0, totalSum = INT_MIN;
+        for(int i=0; i<nums.size(); i++){
+            currentSum = max(currentSum+nums[i], nums[i]);
+            totalSum = max(totalSum, currentSum);
+        }
+        return totalSum;
+    }
+};
