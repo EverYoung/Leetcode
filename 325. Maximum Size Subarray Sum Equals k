@@ -1,0 +1,27 @@
+Prefix sum + hashmap
+
+We add a number each time and record the sum, thus create a prefix sum hashmap which stores prefix sum as key and the index that the prefix
+sum ends up with as value. While we doing this, each time compute the sum, say we now have sum = sum2, we consider the value sum2 = sum-k, 
+if there exist a sum in the hashmap equals to sum1, then hashmap[sum2] - hashmap[sum1] is the length of a subarray that has sum equals to k.
+It is possible that at some time sum is itself equals k, then the current index plus 1 is the length of this subarray.
+
+Code:
+
+class Solution {
+public:
+    int maxSubArrayLen(vector<int>& nums, int k) {
+        int n = nums.size();
+        int sum = 0, maxLen = 0;
+        unordered_map<int, int> hashmap;
+        for(int i = 0; i < n; ++i){
+            sum += nums[i];
+            int diff = sum - k;
+            if(diff == 0) maxLen = max(maxLen, i + 1);
+            else if(hashmap.find(diff) != hashmap.end()){
+                maxLen = max(maxLen, i - hashmap[diff]);
+            }
+            hashmap.insert(pair<int, int>(sum, i)); 
+        }
+        return maxLen;
+    }
+};
