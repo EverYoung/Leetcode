@@ -45,3 +45,34 @@ public:
         else return -1;
     }
 };
+
+2. Using two pointers. 
+
+Keep adding numbers (move one of the pointer forward) and then we move numbers at the front out (move the other pointer forward) to 
+decrease the sum. When the sum is larger than or equal to s we record the length of the candidate subarray. This idea is like a sliding
+window, we keep making window larger and increase the sum. Once the sum goes over s, we decrease the width of the window to find the 
+narrowest window.
+
+Code:
+
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        if(nums.size() == 0) return 0;
+        if(nums[0] >= s) return 1;
+        int n = nums.size();
+        int front = 0, end = 0, minLen = INT_MAX, sum = 0;
+        while(end < n){
+            sum += nums[end];
+            while(sum >= s){
+                minLen = min(minLen, end - front + 1);
+                sum -= nums[front];
+                ++front;
+            }
+            ++end;
+        }
+        return minLen == INT_MAX ? 0 : minLen;
+    }
+};
+
+
