@@ -20,7 +20,7 @@ public:
             else if(hashmap.find(diff) != hashmap.end()){
                 maxLen = max(maxLen, i - hashmap[diff]);
             }
-            hashmap.insert(pair<int, int>(sum, i)); 
+            if(hashmap.find(sum) == hashmap.end()) hashmap.insert(pair<int, int>(sum, i)); 
         }
         return maxLen;
     }
