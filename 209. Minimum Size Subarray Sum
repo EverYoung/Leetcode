@@ -31,7 +31,7 @@ public:
         return minLen == INT_MAX ? 0 : minLen;
     }
     
-    int binarySearch(vector<int> prefixSum, int target){
+    int binarySearch(vector<int>& prefixSum, int target){
         int n = prefixSum.size();
         if(n == 0) return -1;
         int left = 0, right = n - 1;
