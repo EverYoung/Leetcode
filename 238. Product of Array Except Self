@@ -1,0 +1,21 @@
+Observing each product we can see that the product can be computed by multiply the product of all elements before current one and the 
+product of all elements after current one. So we scan the whole array twice, once bottom-up and once top-down, while keep recording the 
+pre-product and the post-product.
+
+Code:
+
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> res(n, 1);
+        int pre = 1, post = 1;
+        for(int i = 0, j = n-1; i < n; i++, j--){
+            res[i] *= pre;
+            res[j] *= post;
+            pre *= nums[i];
+            post *= nums[j];
+        }
+        return res;
+    }
+};
