@@ -1,0 +1,23 @@
+This problem is similar to Maximum Sum Subarray. But due to the feature of multiplication, there is little difference on what we do.
+
+The key idea is dynamic programming. We keep record the maximum and the minimum product that can be achieved by the end of i-th number. The
+reason we keep the minimum is that when we encounter a negative number, the minimum value multiply the negative number will become a maximum
+product while the original maximum can derive a minimum product. And also observe that the only value we need to compute a need product is
+with the index (i-1)-th, which means that we don't need to store all the previous product. Therefore we can simplified the memory using two
+variables.
+
+Code:
+
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int maxProduct = nums[0], minProduct = nums[0], ans = nums[0];
+        for(int i = 1; i < nums.size(); ++i){
+            if(nums[i] < 0) swap(maxProduct, minProduct);
+            maxProduct = max(nums[i], maxProduct * nums[i]);
+            minProduct = min(nums[i], minProduct * nums[i]);
+            ans = max(ans, maxProduct);
+        }
+        return ans;
+    }
+};
