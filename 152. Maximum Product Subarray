@@ -21,3 +21,48 @@ public:
         return ans;
     }
 };
+
+And a embarrasing recursive solution:
+
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        return maxProductHelper(nums, 0, nums.size()-1);
+    }
+    
+    int maxProductHelper(vector<int>& nums, int front, int back){
+        if(front==back) return nums[front];
+        if(nums[front]==0) return max(0, maxProductHelper(nums, front+1, back));
+        if(nums[back]==0) return max(0, maxProductHelper(nums, front, back-1));
+        int zero = -1, maxProduct = 0, allProduct = 1;
+        vector<int> neg_pos;
+        for(int i=front; i<=back; i++){
+            if(nums[i]==0){
+                zero = i;
+                break;
+            }
+            allProduct *= nums[i];
+            if(nums[i]<0){
+                neg_pos.push_back(i);
+            }
+        }
+        if(zero>=0){
+            maxProduct = max(maxProductHelper(nums, front, zero-1), maxProductHelper(nums, zero+1, back));
+            maxProduct = max(0, maxProduct);
+        }
+        else{
+            if(neg_pos.size()%2==0) maxProduct = allProduct;
+            else{
+                int temp1 = allProduct, temp2 = allProduct;
+                for(int i=back; i>=neg_pos.back(); i--){
+                    temp1 /= nums[i];
+                }
+                for(int i=front; i<=neg_pos.front(); i++){
+                    temp2 /= nums[i];
+                }
+                maxProduct = max(temp1, temp2);
+            }
+        }
+        return maxProduct;
+    }
+};
