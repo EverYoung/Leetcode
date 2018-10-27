@@ -1,0 +1,20 @@
+Two pointers.
+
+Code:
+
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        int n = nums.size();
+        int ptr1 = 0, ptr2 = 0;
+        vector<string> res;
+        while(ptr2 < n){
+            while(nums[ptr2] == nums[ptr2+1] - 1) ++ptr2;
+            if(ptr1 == ptr2) res.push_back(to_string(nums[ptr1]));
+            else res.push_back(to_string(nums[ptr1]) + "->" + to_string(nums[ptr2]));
+            ++ptr2;
+            ptr1 = ptr2;
+        }
+        return res;
+    }
+};
