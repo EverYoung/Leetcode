@@ -26,3 +26,26 @@ public:
         }
     }
 };
+
+2. Dutch Flag Partition: move values less than middle value to the front and move values larger than middle value to the back. Leave the 
+middle values as they are, eventually they will be swap to where they should be.
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int n = nums.size();
+        int ptr1 = 0, ptr2 = 0, ptr3 = n - 1;
+        while(ptr1 <= ptr3){
+            if(nums[ptr1] < 1){
+                swap(nums[ptr1], nums[ptr2]);
+                ++ptr1;
+                ++ptr2;
+            }
+            else if(nums[ptr1] > 1){
+                swap(nums[ptr1], nums[ptr3]);
+                --ptr3;
+            }
+            else ++ptr1;
+        }
+    }
+};
