@@ -1,0 +1,28 @@
+1. Counting sort;
+Since we only have 3 values in the array, and we are asked to sort them. We already know there relative order, and we can just count the 
+number of those values in the array and place them in order in the array.
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int red = 0, white = 0, blue = 0;
+        for(int num : nums){
+            if(num == 0) ++red;
+            else if(num == 1) ++white;
+            else ++blue;
+        }
+        int index = 0;
+        while(red > 0){
+            nums[index++] = 0;
+            --red;
+        }
+        while(white > 0){
+            nums[index++] = 1;
+            --white;
+        }
+        while(blue > 0){
+            nums[index++] = 2;
+            --blue;
+        }
+    }
+};
