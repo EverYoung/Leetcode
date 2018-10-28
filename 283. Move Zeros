@@ -1,0 +1,20 @@
+Think about this problem in a different way. The descripition of the problem mainly focus on zeros, but let's think in this way: how we 
+move all the non-zero numbers to the front and keep its order. This make the problem much easier, since if we try to swap zero to the back,
+it will change the relative order of the non-zero numbers, but if we swap non-zero numbers to the front and leave the zeros there, we keep
+their order, and after we done, all zeros will be move to the back.
+
+Code:
+
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int ptr1 = 0, ptr2 = 0;
+        while(ptr2 < nums.size()){
+            if(nums[ptr2] != 0){
+                swap(nums[ptr1], nums[ptr2]);
+                ++ptr1;
+            }
+            ++ptr2;
+        }
+    }
+};
