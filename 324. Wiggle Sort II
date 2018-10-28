@@ -1,0 +1,31 @@
+The wiggle property is changed to be stricter than Wiggle Sort I, and the problem become far more complicated.
+
+To solve this problem and avoid placing two identical number together, we can first extract all the numbers out in some order and place
+them back in some relation. Therefore, there are two main part to solve this problem.
+(1) Partition: put all the small number which should be in the even position in a part, and then put all the larger number which sould be in
+the odd position in another part.
+(2) Placement: place numbers back to the array at even/odd position according to which part they are in.
+
+1. Sorting for partition, then placement. ----O(nlogn) time and O(n) space
+The most easy way to do the partition is sorting, after which all the smaller numbers are in the front half, and all the larger numbers are 
+in the back half. And then the placement, we just put the number in the front half into even positions and the numbers in the back half into
+odd positions.
+
+Code:
+
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        vector<int> copy(nums);
+        sort(copy.begin(), copy.end());
+        int n = nums.size(), mid = (n + 1) >> 1;
+        for(int i = mid - 1, j = 0; i >= 0; --i, j += 2) nums[j] = copy[i];
+        for(int i = n - 1, j = 1; i >= mid; --i, j += 2) nums[j] = copy[i];
+    }
+};
+
+2. Find the median instead of using sorting, then placement. ----O(n) time and O(n) space
+Sorting can be overkill for the partition since we don't care about the order inside each half. We can simply find the median value and use
+it to partition instead of sorting.
+
+Code:
