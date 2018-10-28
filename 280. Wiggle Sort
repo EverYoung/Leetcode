@@ -1,0 +1,25 @@
+One-pass solution:
+
+If we at a position where the number should be a peak, but it is smaller than former element, than we swap them, since the later element 
+should be still smller than this number. Similarly, if we at a position where the number should be a valley, however it is larger than the
+former element, than we swap them, and the former position is stll a peak, and current position will be a valley.
+
+Code:
+
+class Solution {
+public:
+    void wiggleSort(vector<int>& nums) {
+        int n = nums.size(), ptr = 1;
+        while(ptr < n){
+            if(ptr % 2 != 0){
+                if(nums[ptr] < nums[ptr-1])
+                    swap(nums[ptr], nums[ptr-1]);
+            }
+            else if(ptr % 2 == 0){
+                if(nums[ptr] > nums[ptr-1])
+                    swap(nums[ptr], nums[ptr-1]);
+            }
+            ++ptr;
+        }
+    }
+};
