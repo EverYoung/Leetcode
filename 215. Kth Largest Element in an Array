@@ -1,0 +1,75 @@
+1. Priority Queue: Creat a priority queue for the array and pop the first k-1 numbers and the top will be the k-th largest number.
+
+Code:
+
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int> pq(nums.begin(), nums.end());
+        while(k > 1){
+            pq.pop();
+            k--;
+        }
+        return pq.top();
+    }
+};
+
+2. Use the partition part of QuickSort: Since we only need to find the k-th largest element, we don't really need some kind of order, we 
+can simply seperate the array into two half. We put all the number larger than pivot in the front half and other in the back half, we can 
+know the pivot's position in the array, and if it is the k-th, we return it.
+
+Code:
+
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        return partition(nums, 0, nums.size()-1, k);
+    }
+    
+    int partition(vector<int>& nums, int left, int right, int k){
+        if(left == right) return nums[left];
+        int piv = nums[right];
+        int slow = left, fast = left;
+        while(fast < right){
+            if(nums[fast] > piv){
+                swap(nums[slow], nums[fast]);
+                ++slow;
+            }
+            ++fast;
+        }
+        swap(nums[slow], nums[right]);
+        if(slow == k - 1) return piv;
+        else if(slow < k - 1) return partition(nums, slow + 1, right, k);
+        else return partition(nums, left, slow - 1, k);
+    }
+};
+
+3. Use max heap: Build a max heap, and then heapify for k - 1 times then the k-th largest element will at the top.
+
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int n = nums.size();
+        buildHeap(nums, n);
+        for(int i = 0; i < k - 1; ++i){
+            swap(nums[0], nums[n-1]);
+            --n;
+            maxHeapify(nums, n, 0);
+        }
+        return nums[0];
+    }
+    
+    void maxHeapify(vector<int>& nums, int n, int idx){
+        int largest = idx, left = 2 * idx + 1, right = 2 * idx + 2;
+        if(left < n && nums[left] > nums[largest]) largest = left;
+        if(right < n && nums[right] > nums[largest]) largest = right;
+        if(largest != idx){
+            swap(nums[largest], nums[idx]);
+            maxHeapify(nums, n, largest);
+        }
+    }
+    
+    void buildHeap(vector<int>& nums, int n){
+        for(int i = nums.size()/2 - 1; i >= 0; --i) maxHeapify(nums, n, i);
+    }
+};
