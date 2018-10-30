@@ -1,0 +1,63 @@
+1. Use multiset and a pointer
+The main idea of this solution is to use the feature of multiset that it keep a ascending order of its elements. Because of this, we only 
+need to maintain that a pointer is pointing to the median of those elements inside the multiset, which can be done by moving the pointer 
+according to the incoming value.
+
+class MedianFinder {
+public:
+    /** initialize your data structure here. */
+    multiset<double> ms;
+    multiset<double>::iterator median;
+    
+    void addNum(int num) {
+        int n = ms.size();
+        ms.insert(num);
+        if(n == 0){
+            median = ms.begin();
+        }
+        else if(n & 1){
+            if(num < *median) --median;
+        }
+        else{
+            if(num >= *median) ++median;
+        }
+    }
+    
+    double findMedian() {
+        int n = ms.size();
+        if(n & 1) return *median;
+        else return (*median + *next(median)) * 0.5;
+    }
+};
+
+2. Use two priority queues (heaps)
+Use two priority queues, one max priority queue for the small half of those numbers that are already taken in, and one min priority queue
+for the large half. When we take in one new value, we push into the small half, then the priority queue will heapify to maintain the order 
+of heap. So we always have the largest value in the small half and the smallest value in the large half both on top of their priority queue.
+We alway restrict that the small half should contain at most 1 more or equal number of elements as the large half. Then when we already 
+input odd number of values, we will have the median at the top of the small half, and when input even number of values, the median can be
+computed by both tops. To keep these two priority queue keep the balance we restrict, every time we add a number, we add it to small half
+first, then we pass its top to the large half. Then it is possible that the large half have more values than small half. To keep balance,
+we pass the top of large half to samll half. After all these we can compute our median by their tops now.
+
+class MedianFinder {
+public:
+    /** initialize your data structure here. */
+    priority_queue<double> small_half;
+    priority_queue<double, vector<double>, greater<double>> large_half;
+    
+    void addNum(int num) {
+        small_half.push(num);
+        large_half.push(small_half.top());
+        small_half.pop();
+        if(large_half.size() > small_half.size()){
+            small_half.push(large_half.top());
+            large_half.pop();
+        }
+    }
+    
+    double findMedian() {
+        if(small_half.size() > large_half.size()) return small_half.top();
+        else return (small_half.top() + large_half.top()) * 0.5;
+    }
+};
