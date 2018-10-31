@@ -1,0 +1,19 @@
+Brute-force
+Use the first array as a reference and scan each character of it in other strings, if there is a string that does not contain such character
+at current index, say i, we can return the substring of first string in range [0,i-1] as prefix.
+
+Code:
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if(strs.size()==0) return "";
+        for(int i=0; i<strs[0].length(); i++){
+            for(int j=1; j<strs.size();j++){
+                if(i == strs[j].length() || strs[j].at(i) != strs[0].at(i))
+                    return strs[0].substr(0,i);
+            }
+        }   
+        return strs[0];
+    }
+};
