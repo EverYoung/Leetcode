@@ -1,3 +1,8 @@
+The solution is simple, since the logic in this problem is basically whether magazine contains enough number of chars to construct ransom
+Note. So we need to count the chars in magazine and store them in a way that is easy to look up. Therefore, we use a hashmap. We take two
+loops, first go through magazine to build up the hashmap, and then go through ransom note to see whether magazine has enough number of each
+char in ransom note.
+
 class Solution {
 public:
     bool canConstruct(string ransomNote, string magazine) {
