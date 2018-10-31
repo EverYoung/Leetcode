@@ -1,0 +1,19 @@
+This problem indicates that we find repeated elements, which is actually to count the apperance of elements. And when we mention a problem
+counting appearance of elements, we should use a hashmap.
+
+class Solution {
+public:
+    int firstUniqChar(string s) {
+        unordered_map<char, int> hashmap;
+        for(int i=0; i<s.size(); i++){
+            if(hashmap.find(s[i])==hashmap.end()){
+                hashmap.insert(pair<char, int>(s[i], 1));
+            }
+            else hashmap[s[i]]++;
+        }
+        for(int j=0; j<s.size(); j++){
+            if(hashmap[s[j]]==1) return j;
+        }
+        return -1;
+    }
+};
