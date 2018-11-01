@@ -1,0 +1,17 @@
+Since we are not required to modify the original string but to simply change its order to reverse one, we can use two pointers to copy the
+pointing char to a new string.
+
+class Solution {
+public:
+    string reverseString(string s) {
+        string res(s);
+        int start = 0, end = s.size() - 1;
+        while(start < end){
+            res[start] = s[end];
+            res[end] = s[start];
+            ++start;
+            --end;
+        }
+        return res;
+    }
+};
