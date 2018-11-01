@@ -19,3 +19,5 @@ public:
         return true;
     }
 };
+
+A faster way of doing this is use vector instead of hashmap, but it is not suggested in the real world.
