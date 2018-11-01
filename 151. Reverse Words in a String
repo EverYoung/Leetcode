@@ -1,0 +1,12 @@
+Use istringstream
+
+class Solution {
+public:
+    void reverseWords(string &s) {
+        istringstream in(s);
+        in >> s;
+        string temp;
+        while(in >> temp) s = temp + " " + s;
+        if(s[0] == ' ') s = "";
+    }
+};
