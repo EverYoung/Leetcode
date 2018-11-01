@@ -15,3 +15,16 @@ public:
         return res;
     }
 };
+
+If it is not required to maintain the original string, we can do this in place.
+
+class Solution {
+public:
+    string reverseString(string s) {
+        int start = 0, end = s.size() - 1;
+        while(start < end){
+            swap(s[start++], s[end--]);
+        }
+        return s;
+    }
+};
