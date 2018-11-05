@@ -1,0 +1,21 @@
+Use customized comparator to sort the number array.
+
+class Solution {
+public:
+    string largestNumber(vector<int>& nums) {
+        sort(nums.begin(), nums.end(), comparator);
+        string res = "";
+        if(nums[0] == 0) return "0";
+        for(int num : nums){
+            res += to_string(num);
+        }
+        if(res[0] == '0') return "0";
+        return res;
+    }
+    
+    static bool comparator(const int num1, const int num2){
+        string temp1 = to_string(num1) + to_string(num2);
+        string temp2 = to_string(num2) + to_string(num1);
+        return temp1 > temp2;
+    }
+};
