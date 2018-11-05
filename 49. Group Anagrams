@@ -1,4 +1,4 @@
-Use HashMap, take string in sorted order as keys.
+1.Use HashMap, take string in sorted order as keys.
 
 class Solution {
 public:
@@ -22,3 +22,5 @@ public:
         return res;
     }
 };
+
+2.Use HashMap, create a string denote counting for each charatcter with size 26, use it as key for hashmap.
