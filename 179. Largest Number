@@ -1,5 +1,8 @@
 Use customized comparator to sort the number array.
 
+!! When define comparator, if return the logical statement as x >= y instead of x > y, will cause runtime error in some cases where most of
+the member in array have the same value.
+
 class Solution {
 public:
     string largestNumber(vector<int>& nums) {
