@@ -1,0 +1,33 @@
+HashMap. Use a string as keys, where each charater is a number that denotes the distance between the character at the corresponding position and 
+the charater at the front. The keys indicate the pattern of the original strings, since after shifted there relative distances remain the
+same.
+
+class Solution {
+public:
+    vector<vector<string>> groupStrings(vector<string>& strings) {
+        vector<vector<string>> res;
+        if(strings.size() == 0) return res;
+        unordered_map<string, vector<string>> hashmap;
+        for(string s :strings){
+            string count = "0";
+            for(int i = 1; i < s.size(); ++i){
+                count.push_back(distance(s[0], s[i]));
+            }
+            if(hashmap.find(count) == hashmap.end()){
+                vector<string> temp;
+                temp.push_back(s);
+                hashmap.insert(pair<string, vector<string>>(count, temp));
+            }
+            else hashmap[count].push_back(s);
+        }
+        for(auto pair : hashmap){
+            res.push_back(pair.second);
+        }
+        return res;
+    }
+    
+    int distance(char x1, char x2){
+        if(x1 > x2) return x2 - x1 + 26;
+        else return x2 - x1;
+    }
+};
