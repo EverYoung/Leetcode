@@ -1,0 +1,24 @@
+Straight-forward solution:
+Use k-th to generate k+1-th string. Iterate from 1 to n. Each time we use a temporary string to build the new string, and go through the 
+last string and use a counter to count each digit's appearance.
+
+class Solution {
+public:
+    string countAndSay(int n) {
+        if(n == 0) return "";
+        string res = "1";
+        for(int i = 1; i < n; ++i){
+            string cur = "";
+            for(int j = 0; j < res.size(); ++j){
+                int count = 1;
+                while(res[j] == res[j+1] && j < res.size()-1){
+                    ++count;
+                    ++j;
+                }
+                cur += to_string(count) + res[j];
+            }
+            res = cur;
+        }
+        return res;
+    }
+};
