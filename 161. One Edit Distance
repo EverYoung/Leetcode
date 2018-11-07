@@ -1,0 +1,72 @@
+1. Dynamic Programming
+T[i,j] means the number of edit we need to make s[0,..,i-1] = t[0,...,j-1].
+If s[i] = t[j], T[i,j] = T[i-1,j-1]. Else, T[i,j] = min(T[i-1,j-1],T[i-1,j],T[i,j-1])+1.
+
+class Solution {
+public:
+    bool isOneEditDistance(string s, string t) {
+        int n = s.size(), m = t.size();
+        vector<int> dp(m+1, 0);
+        for(int j = 0; j <= m; ++j){
+            dp[j] = j;
+        }
+        for(int i = 1; i <= n; ++i){
+            int temp = dp[0];
+            ++dp[0];
+            for(int j = 1; j <= m; ++j){
+                int temp1 = dp[j];
+                if(s[i-1] == t[j-1])
+                    dp[j] = temp;
+                else{
+                    dp[j] = min(temp, min(dp[j-1], dp[j])) + 1;
+                }
+                temp = temp1;
+            }
+        }
+        return dp[m] == 1;
+    }
+};
+
+2. Traversal and modification
+If the length of two strings are the same, there should be a replacement. Else if the length difference is 1, there should be a insertion 
+or deletion, and we always take the short string as reference and look up insertion. Every time we find a mismatch, we either do replacement
+or insertion, until we the short string is traversed. Finally we judge if there is a mismatch and if string s and t are equal now.
+
+class Solution {
+public:
+    bool isOneEditDistance(string s, string t) {
+        int n = s.size(), m = t.size();
+        if(n < m) return isOneEditDistance(t, s);
+        if(n - m > 1) return false;
+        bool mismatch = false;
+        for(int i = 0; i < m; ++i){
+            if(s[i] != t[i]){
+                if(n == m) s[i] = t[i];
+                else{
+                    t.insert(i, 1, s[i]);
+                }
+                mismatch = true;
+                break;
+            }
+        }
+        return (mismatch && s == t) || (!mismatch && n - m == 1);
+    }
+};
+
+3. Two pointers
+The end point of prefix and the end point of suffix should be 1 distance away from each other.
+
+class Solution {
+public:
+    bool isOneEditDistance(string s, string t) {
+        int n = s.size(), m = t.size();
+        if(n - m > 1) return false;
+        int f_ptr = 0, e_ptr = 0;
+        int len = min(n, m);
+        while(f_ptr < len && s[f_ptr] == t[f_ptr]) f_ptr++;
+        while(e_ptr < len - f_ptr && s[n - e_ptr - 1] == t[m - e_ptr - 1]) e_ptr++;
+        int max_len = max(n, m);
+        cout << f_ptr << e_ptr << endl;
+        return max_len - f_ptr - e_ptr == 1;
+    }
+};
