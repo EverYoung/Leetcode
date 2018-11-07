@@ -1,0 +1,39 @@
+Greedy algorithm:
+To rearrange these characters, we use greedy algorithm. In each block with size k, we always put the characters with largest remaining 
+number into it first. Use a priority queue and a cache to implement this greedy algorithm. Each time we put the corresponding character at
+the top of priority queue into the current k block, and pop this character and put it to cache which means this character is curretly frozen
+for current block. We push this character back to priority queue when we start arrange the next block. The impossible rearrangement case
+happens when the priority queue is empty before we can arrange a block, which means there is no available characters to fill up the block 
+and keep same characters k distance apart.
+
+class Solution {
+public:
+    string rearrangeString(string s, int k) {
+        int n = s.size();
+        if(k == 0) return s;
+        
+        unordered_map<char, int> hashmap;
+        priority_queue<pair<int, char>> pq;
+        for(char c : s) hashmap[c]++;
+        for(auto p : hashmap){
+            pq.push(pair<int, char>(p.second, p.first));
+        }
+        
+        string res = "";
+        while(!pq.empty()){
+            vector<pair<int, char>> cache;
+            int loop = min(k, n);
+            for(int i = 0; i < loop; ++i){
+                if(pq.empty()) return "";
+                auto p = pq.top();
+                pq.pop();
+                res.push_back(p.second);
+                --p.first;
+                if(p.first > 0) cache.push_back(p);
+                --n;
+            }
+            for(auto p : cache) pq.push(p);
+        }
+        return res;
+    }
+};
