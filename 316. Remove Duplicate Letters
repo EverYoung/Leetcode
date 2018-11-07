@@ -1,0 +1,43 @@
+HashMap + Stack + Set
+Since finding duplicate can be very straightforward, we simply use a hashmap to count the appearancec of each character. The difficult part
+of this problem is how to keep the lexicographical order while removing duplicate. Here we use a stack and a set to ensure the required 
+order. We use a stack to store current possible result, and use set to store the character we already kept in the string. So next time when
+we come to a new character, if the character have already been kept in set, then we remove this character (not push into the stack). 
+Otherwise if the character have not been kept, we scan the stack and see if the top of the stack is lexicographically larger than the current
+character, if so we remove it and pop it out of the stack. We do this until the top is smaller than the current character or the stack is
+empty. And then we push our current charcter into stack. Note that each time we consider a character should be removed, we do this by decrease
+the number of appearance of this character in the hashmap and also remove it from the set. Finally, after we scan through all the characters
+in the original string, the stack contends the result in reverse order, the only thing left is reorder those charcters and combine them into
+string.
+
+class Solution {
+public:
+    string removeDuplicateLetters(string s) {
+        int n = s.size();
+        unordered_map<char, int> hm;
+        unordered_set<char> kept;
+        stack<char> st;
+        for(char c : s) hm[c]++;
+        
+        for(char c : s){
+            if(kept.find(c) != kept.end()){
+                hm[c]--;
+                continue;
+            }
+            while(!st.empty() && st.top() > c && hm[st.top()] > 1){
+                hm[st.top()]--;
+                kept.erase(st.top());
+                st.pop();
+            }
+            st.push(c);
+            kept.insert(c);
+        }
+        
+        string res = "";
+        while(!st.empty()){
+            res = st.top() + res;
+            st.pop();
+        }
+        return res;
+    }
+};
