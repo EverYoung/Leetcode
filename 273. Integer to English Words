@@ -1,4 +1,4 @@
-Recursive call function to transfer each part into string.
+1. Recursive call function to transfer each part into string.
 
 class Solution {
 public:   
@@ -32,3 +32,7 @@ public:
         return res;
     }
 };
+
+2. Recursive call a function which transfert each part of number divided by "billion", "million", "thousand", each number is a number under
+thousand.
+
