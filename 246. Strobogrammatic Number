@@ -1,0 +1,19 @@
+A strobogrammaic number should have their matching number at the symmetrical position in the string, and if there is a number in the string
+that does not have any match number, the whole number is not a strobogrammatic number.
+
+class Solution {
+public:
+    bool isStrobogrammatic(string num) {
+        int n = num.size();
+        if(n == 0) return true;
+        if(num[0] == '-') return false;
+        vector<int> map({'0', '1', '-1', '-1', '-1', '-1', '9', '-1', '8', '6'});
+        int front = 0, end = n - 1;
+        while(front <= end){
+            if(map[num[front] - '0'] != num[end]) return false;
+            ++front;
+            --end;
+        }
+        return true;
+    }
+};
