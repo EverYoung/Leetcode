@@ -1,0 +1,58 @@
+Use stack to store words in each line. When a new word cannot fit into the current line, we pop words out and rearrange them into string.
+
+class Solution {
+public:
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        int n = words.size();
+        vector<string> res;
+        stack<string> st;
+        if(n == 0) return res;
+        
+        int charCounter = 0;
+        string line = "";
+        for(int i = 0; i < n;){
+            // Curret used width: Total char number in stack plus 1 space between each word
+            if(charCounter + words[i].size() + st.size() <= maxWidth){
+                charCounter += words[i].size();
+                st.push(words[i]);
+                ++i;
+            }
+            else{
+                if(st.size() > 1){
+                    int extraspace = (maxWidth - charCounter) % (st.size() - 1);
+                    int spaceLen = (maxWidth - charCounter) / (st.size() - 1);
+                    string space;
+                    space.insert(0, spaceLen, ' ');
+                    int numWords = st.size();
+                    while(!st.empty()){
+                        if(st.size() == numWords) line = st.top() + line;
+                        else {
+                            if(st.size() <= extraspace){
+                                line = st.top() + space + " " + line;
+                            }
+                            else line = st.top() + space + line;
+                        }
+                        st.pop();
+                    }
+                }
+                else{
+                    line = st.top();
+                    line.insert(line.end(), maxWidth - line.size(), ' ');
+                    st.pop();
+                }
+                res.push_back(line);
+                line = "";
+                charCounter = 0;
+            }
+        }
+        
+        while(!st.empty()){
+            if(st.size() != 1) line = " " + st.top() + line;
+            else line = st.top() + line;
+            st.pop();
+        }
+        line.insert(line.end(), maxWidth - line.size(), ' ');
+        res.push_back(line);
+        return res;
+    }
+};
