@@ -1,0 +1,33 @@
+Create a helper and recursively call the helper to build up the result. In each call, we all strobogrammatic numbers to the result of last
+call.
+
+class Solution {
+public:
+    vector<string> findStrobogrammatic(int n) {
+        return helper(n, n);
+    }
+    
+    vector<string> helper(int n, int m){
+        unordered_map<string, string> map({{"0", "0"}, {"1", "1"}, {"6", "9"}, {"8", "8"}, {"9", "6"}});
+        vector<string> res;
+        if(m == 0){
+            res.push_back("");
+        }
+        else if(m == 1){
+            for(auto pair : map){
+                if(pair.first == "6" || pair.first == "9") continue;
+                res.push_back(pair.first);
+            }
+        }
+        else {
+            vector<string> last = helper(n, m - 2);
+            for(string str : last){
+                for(auto pair : map){
+                    if(n == m && pair.first == "0") continue;
+                    res.push_back(pair.first + str + pair.second);
+                }
+            }
+        }
+        return res;
+    }
+};
