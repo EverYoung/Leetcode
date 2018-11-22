@@ -1,0 +1,43 @@
+Sliding Window Method
+
+Use a map to track the number of characters in t that are also in the current sliding window and use a counter to check the validity of 
+current window. To slid the window, we first expand the window by moving the right margin pointer to the right, and as we expanding, each 
+time the window takes in a charcter in the map, its number decreases. However, it is possible that the window contains many of a certain 
+character in t and its number in the window is actually larger than its appearance in t, thus in the map it will have a negative number.
+To make sure our counter works, we only change the counter when that character still have a postive number in map. Another way to think of
+this is that, if a character has negative number in map, there must be redundant and thus those redundant ones should not be counted as
+valid. After expanding, since we are looking for a minimum window, we should shrink our window and try to find the minimum one. So we 
+move the left margin pointer to the right. And also when a character has positive number in the map, it means that all the redundant 
+ones are moved out of the map and therefore we can change our conunter.
+
+Code:
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        int left = 0, right = 0;
+        int min_window = INT_MAX, ptr_left = -1, counter = t.size();
+        unordered_map<char, int> dict;
+        for(char c : t) dict[c]++;
+        
+        while(right < s.size()){
+            if(dict.find(s[right]) != dict.end()){
+                dict[s[right]]--;
+                if(dict[s[right]] >= 0) counter--;
+            }
+            right++;
+            while(left < right && counter == 0){
+                if(min_window > right - left){
+                    min_window = right - left;
+                    ptr_left = left;
+                }
+                if(dict.find(s[left]) != dict.end()){
+                    dict[s[left]]++;
+                    if(dict[s[left]] > 0) counter++;
+                }
+                left++;
+            }
+        }
+        if(min_window == INT_MAX) return "";
+        else return s.substr(ptr_left, min_window);
+    }
+};
