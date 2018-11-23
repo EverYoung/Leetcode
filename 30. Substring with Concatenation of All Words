@@ -1,0 +1,65 @@
+Sliding Window:
+
+Use a sliding window to traverse all the potential substring.
+Use two Hashmap to record the words needed and the words in window. Use a counter to count the valid words in the current window.
+Consider starting points i in domain [0, word_len), all the starting point beyond this domain can be consider by sliding the window 
+starting from points inside this domain.
+
+
+Code:
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        vector<int> res;
+        if(words.size() == 0 || s.size() < words[0].size()) return res;
+        int num_words = words.size();
+        int word_len = words[0].size();
+        unordered_map<string, int> dict;
+        for(string word : words) dict[word]++;
+        
+        for(int i = 0; i < word_len; i++){
+            // Sliding window: left edge -> left, right edge -> j
+            int left = i;
+            unordered_map<string, int> window_words;
+            int count = 0;
+            // Move right edge forward (to the left) by a word length
+            for(int j = i; j <= s.size() - word_len; j += word_len){
+                string cur = s.substr(j, word_len);
+                // If the current substring is in  words
+                if(dict.find(cur) != dict.end()){
+                    window_words[cur]++;
+                    // If the current substring is not redundant
+                    if(window_words[cur] <= dict[cur]) ++count;
+                    // If is redundant, shrink the window by moving left edge forward by a word length
+                    else{
+                        while(window_words[cur] > dict[cur]){
+                            string str = s.substr(left, word_len);
+                            window_words[str]--;
+                            // If we move out a valid word, counter decrease
+                            if(window_words[str] < dict[cur]) --count;
+                            left += word_len;
+                        }
+                    }
+                    
+                    // If we have the same amount of words in the window as required
+                    // Record starting point of the window and move the window forward by one word
+                    if(count == num_words){
+                        res.push_back(left);
+                        window_words[s.substr(left, word_len)]--;
+                        --count;
+                        left += word_len;
+                    }
+                }
+                // If current substring is not a valid word
+                // Jump over all the potential window that contains this word
+                // Window starts at the next word
+                else{
+                    left = j + word_len;
+                    count = 0;
+                    window_words.clear();
+                }
+            }
+        }
+        return res;
+    }
+};
