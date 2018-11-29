@@ -1,0 +1,75 @@
+1. Sliding Window
+Use a sliding window to keep a valid substring inside the window.
+
+The difference is that for this problem, characters that ara not repeated for K times or more, may appear in among those satisfying
+characters and it is hard to track them. And also for example, for a string like cabaabbc, it is difficult to define a condition that we
+start to shrink window, since our algorithm don't know whether it should discard the c at the beginning to shrink the window, because it
+doesn't know whethere there are c's will come in.
+
+That's why here, we need to specify the number of unique characters in the substring we need to find.
+
+At each iteration step, we need to find a substring with unique characters of number len. And if the number of characters appeared in the sliding
+window "appeared" equals to "len" and also all of them satisfy the condition that they are repeated for K or more than K times. Then we
+find a valid result.
+
+class Solution {
+public:
+    int longestSubstring(string s, int k) {
+        int res = 0;
+        for(int len = 1; len <= 26; len++){
+            vector<int> map(26, 0);
+            int left = 0, right = 0;
+            int appeared = 0, satisfied = 0;
+            while(right < s.size()){
+                if(appeared <= len) {
+                    if(map[s[right] - 'a'] == 0) appeared++;
+                    map[s[right] - 'a']++;
+                    if(map[s[right] - 'a'] == k) satisfied++;
+                    right++;
+                }
+                else{
+                    map[s[left] - 'a']--;
+                    if(map[s[left] - 'a'] == k - 1) satisfied--;
+                    if(map[s[left] - 'a'] == 0) appeared--;
+                    left++;
+                }
+                if(appeared == len && appeared == satisfied){
+                    res = max(res, right - left);
+                }
+            }
+        }
+        return res;
+    }
+};
+
+2. Recurrence.
+
+Divide the string from the character that are not repeated for K or more than K times, and find the required substring in the two halves.
+
+class Solution {
+public:
+    int longestSubstring(string s, int k) {
+        return helper(s, k, 0, s.size());
+    }
+    
+    int helper(string s, int k, int start, int end){
+        int len = end - start;
+        if(len < k) return 0;
+        vector<int> map(26, 0);
+        for(int i = start; i < end; i++){
+            map[s[i] - 'a']++;
+        }
+        for(int j = 0; j < 26; j++){
+            if(map[j] < k && map[j] > 0){
+                for(int h = start; h < end; h++){
+                    if(s[h] == 'a' + j){
+                        int left_len = helper(s, k, start, h);
+                        int right_len = helper(s, k, h + 1, end);
+                        return max(left_len, right_len);
+                    }
+                }
+            }
+        }
+        return len;
+    }
+};
