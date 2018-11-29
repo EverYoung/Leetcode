@@ -1,0 +1,27 @@
+Sliding Window
+
+class Solution {
+public:
+    int lengthOfLongestSubstringKDistinct(string s, int k) {
+        if(s.size() == 0 || k == 0) return 0;
+        if(k >= s.size()) return s.size();
+        vector<int> hashmap(256, 0);
+        int len = 0, seen_count = 0;
+        int left = 0, right = 0;
+        while(right < s.size()){
+            if(hashmap[s[right]] == 0) seen_count++;
+            hashmap[s[right]]++;
+            if(seen_count <= k){
+               len = max(len, right - left + 1);
+            }
+            while(seen_count > k){
+                hashmap[s[left]]--;
+                if(hashmap[s[left]] == 0) seen_count--;
+                //if(hashmap[s[left]] == 0) hashmap.erase(s[left]);
+                left++;
+            }
+            right++;
+        }
+        return len;
+    }
+};
