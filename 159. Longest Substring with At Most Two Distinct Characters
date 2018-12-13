@@ -1,0 +1,24 @@
+Sliding Window
+
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+        int left = 0, right = 0;
+        int len = 0, char_count = 0;
+        //unordered_map<char, int> hashmap;
+        vector<int> hashmap(256, 0);
+        while(right < s.size()){
+            if(hashmap[s[right]] == 0) char_count++;
+            hashmap[s[right]]++;
+            while(left < right && char_count > 2){
+                hashmap[s[left]]--;
+                if(hashmap[s[left]] == 0) 
+                    char_count--;
+                left++;
+            }
+            len = max(len, right - left + 1);
+            right++;
+        }
+        return len;
+    }
+};
