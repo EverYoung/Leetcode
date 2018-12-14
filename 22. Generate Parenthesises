@@ -1,0 +1,42 @@
+1. Enumerate
+
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        if(n == 0){
+            return vector<string>(1, "");
+        }
+        for(int i = 0; i < n; i++){
+            for(string s1 : generateParenthesis(i)){
+                for(string s2 : generateParenthesis(n - 1 -i)){
+                    res.push_back("(" + s1 + ")" + s2);
+                }
+            }
+        }
+        return res;
+    }
+}
+
+2. Intuitive Backtracking
+Keep track of how many opening parenthesises we can add and how many closing parenthesises we need to add.
+
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        string s = "";
+        addParenthesis(res, s, n, 0);
+        return res;
+    }
+    
+    void addParenthesis(vector<string>& res, string s, int n, int m){
+        if(n == 0 && m == 0){
+            res.push_back(s);
+            return;
+        }
+        if(n > 0) addParenthesis(res, s + "(", n - 1, m + 1);
+        if(m > 0) addParenthesis(res, s + ")", n, m - 1);
+    }
+}
+
