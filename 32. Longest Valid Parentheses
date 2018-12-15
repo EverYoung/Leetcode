@@ -56,3 +56,31 @@ public:
         return max_len;
     }
 };
+
+3. Using stack to store indexes
+A string of parentheses will be seperated into substring of valid parentheses by an unpaired parenthese. So if we use a stack to store 
+openning parentheses, and every time we encounter a closing parentheses we pop one openning parentheses out, then if the substring is 
+valid, the stack will be empty at the end. However, if there is an unpaired parentheses in the middle of the string, then in the end 
+it will remain in the stack. According to this feature, if we instead of storing parentheses, store the index of openning and 
+unpaired parentheses in the string, then the length of a valid substring will be the last closing parentheses's index substract the 
+unpaired one's index in the stack.
+
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        int n = s.size();
+        int max_len = 0;
+        stack<int> st;
+        st.push(-1);
+        for(int i = 0; i < n; i++){
+            char c = s[i];
+            if(c == '(') st.push(i);
+            else {
+                st.pop();
+                if(st.empty()) st.push(i);
+                else max_len = max(max_len, i - st.top());
+            }
+        }
+        return max_len;
+    }
+};
