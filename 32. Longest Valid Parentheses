@@ -1,0 +1,58 @@
+1. Brute Force
+
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        int left = 0, right = 0;
+        int max_len = 0;
+        for(int right = 0; right < s.size(); right++){
+            for(int left = 0; left < right; left++){
+                string temp = s.substr(left, right - left + 1);
+                if(isValid(temp)) max_len = max(max_len, right - left + 1);
+            }
+        }
+        return max_len;
+    }
+    
+    bool isValid(string s){
+        stack<char> st;
+        for(char c : s){
+            if(c == '(') st.push(c);
+            else{
+                if(!st.empty() && st.top() == '(') st.pop();
+                else return false;
+            }
+        }
+        return st.empty();
+    }
+};
+
+2. Dynamic Programming
+Allocate an auxiliary array and for each element in this array, say element with index i, store the longest valid parentheses with the
+i-th parentheses in string as the ending one. And the recurrence relation would be like this: For dp[i]
+(1) If str[i] is an openning parentheses, then it is not valid and thus the length should be 0. (A valid one should have closing 
+parentheses at the end);
+(2) If str[i] is an closing parentheses, then we look back and see if these exist one openning parentheses that can pair with it. Suppose
+there is an openning parentheses that can pair with. Then between this paired parentheses, there is a string with length dp[i-1]. So the
+openning parentheses we are finding is at index i - dp[i-1] - 1. If the index is below zero, then there is no such opennning parentheses;
+otherwise we find one and we can compute dp[i] as dp[i] = dp[i - 1] + dp[i - dp[i-1] - 2] + 2.
+
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        int n = s.size();
+        int max_len = 0;
+        vector<int> dp(n, 0);
+        for(int i = 1; i < n; i++){
+            char c = s[i];
+            if(c == ')'){
+                if(i - dp[i - 1] > 0 && s[i - dp[i - 1] - 1] == '(') {
+                    dp[i] = dp[i - 1] + ((i - dp[i - 1]) >= 2 ? dp[i - dp[i - 1] - 2] : 0) + 2;
+                }
+            }
+            
+            max_len = max(max_len, dp[i]);
+        }
+        return max_len;
+    }
+};
