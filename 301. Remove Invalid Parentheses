@@ -1,0 +1,53 @@
+Backtracking:
+Try every potential way of removal using backtracking. For each parenthesis, either remove it or keep it. There are lots of cases can be
+pruned:
+1. If the current substring has closing brackets more than opening brackets, invalid.
+2. If there is no more opening or closing brackets can be removed; otherwise the number of removal won't be the minimum.
+
+To know the minimum number of removals of opening and closing brackets we can have, we first go through the original string. Each time 
+we encounter an openning bracket, left_rem increases by 1. Each time we encounter a closing bracket, if left_rem == 0, there are no 
+opening bracket can be matched, then right_rem increases by 1; otherwise if left_rem > 0, the current closing bracket match to an opening
+one, left_rem decreases by 1. After this, left_rem and right_rem are the minimum number of removals we can have.
+
+class Solution {
+public:
+    unordered_set<string> us;   
+    
+    vector<string> removeInvalidParentheses(string s) {
+        string cur = "";
+        int left_rem = 0, right_rem = 0;
+        for(int i = 0; i < s.size(); i++){
+            char c = s[i];
+            if(c == '(') left_rem++;
+            else if(c == ')'){
+                right_rem = left_rem == 0 ? right_rem + 1 : right_rem;
+                left_rem = left_rem > 0 ? left_rem - 1 : left_rem;
+            }
+        }
+        backtracking(s, 0, 0, left_rem, right_rem, cur, 0);
+        vector<string> res(us.begin(), us.end());
+        return res;
+    }
+    
+    void backtracking(string str, int left_count, int right_count, int left_rem, int right_rem, string& cur, int i){
+        if(i == str.size()){
+            if(left_rem == 0 && right_rem == 0){
+                us.insert(cur);
+            }
+        }
+        else{
+            char c = str[i];
+            if((c == '(' && left_rem > 0) || (c == ')' && right_rem > 0))
+                backtracking(str, left_count, right_count, left_rem - (c == '(' ? 1 : 0), right_rem - (c == ')' ? 1 : 0), cur, i + 1);
+            cur.push_back(c);
+            
+            if(c != '(' && c != ')') backtracking(str, left_count, right_count, left_rem, right_rem, cur, i + 1);
+            else if(c == '(')
+                backtracking(str, left_count + 1, right_count, left_rem, right_rem, cur, i + 1);
+            else if(right_count < left_count)
+                backtracking(str, left_count, right_count + 1, left_rem, right_rem, cur, i + 1);
+            
+            cur.erase(cur.size() - 1, 1);
+        }
+    }
+};
