@@ -1,0 +1,64 @@
+1. Recursion
+For each operator in the given string, say at i, we recursively compute the possible results of two substrings seperated by the operator
+and then use those results and the operator at i to compute the final results. We do the above process for every operator.
+
+class Solution {
+public:
+    vector<int> diffWaysToCompute(string input) {
+        int len = input.size();
+        vector<int> res;
+        for(int i = 0; i < len; i++){
+            char c = input[i];
+            if(c == '-' ||  c == '+' || c == '*'){
+                for(int a : diffWaysToCompute(input.substr(0, i))){
+                    for(int b : diffWaysToCompute(input.substr(i + 1, len))){
+                        if(c == '+') res.push_back(a + b);
+                        if(c == '-') res.push_back(a - b);
+                        if(c == '*') res.push_back(a * b);
+                    }
+                }
+            }
+        }
+        
+        if(res.empty() && len != 0) res.push_back(stoi(input));
+        return res;
+    }
+};
+
+2. Dynamic Programming
+
+class Solution {
+public:
+    vector<int> diffWaysToCompute(string input) {
+        unordered_map<string, vector<int>> dp;
+        return dpHelper(input, dp);
+    }
+    
+    vector<int> dpHelper(string input, unordered_map<string, vector<int>>& dp){
+        vector<int> res;
+        for(int i = 0; i < input.size(); i++){
+            char op = input[i];
+            if(op == '+' || op == '-' || op == '*'){
+                string sub1 = input.substr(0, i);
+                string sub2 = input.substr(i + 1);
+            
+                vector<int> midres1;
+                vector<int> midres2;
+                if(dp.find(sub1) != dp.end()) midres1 = dp[sub1];
+                else midres1 = dpHelper(sub1, dp);
+                if(dp.find(sub2) != dp.end()) midres2 = dp[sub2];
+                else midres2 = dpHelper(sub2, dp);
+            
+                for(int a : midres1){
+                    for(int b : midres2){
+                        if(op == '+') dp[input].push_back(a + b);
+                        if(op == '-') dp[input].push_back(a - b);
+                        if(op == '*') dp[input].push_back(a * b);
+                    }
+                }
+            }
+        }
+        if(dp[input].empty()) dp[input].push_back(stoi(input));
+        return dp[input];
+    }
+};
