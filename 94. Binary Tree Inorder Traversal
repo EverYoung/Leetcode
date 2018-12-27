@@ -1,0 +1,45 @@
+1. Recursive
+
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(root == NULL) return res;
+        
+        vector<int> res_left = inorderTraversal(root->left);
+        vector<int> res_right = inorderTraversal(root->right);
+        
+        for(int i : res_left){
+            res.push_back(i);
+        }
+        res.push_back(root->val);
+        for(int i : res_right){
+            res.push_back(i);
+        }
+        return res;
+    }
+};
+
+2. Use Stack
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(root == NULL) return res;
+        
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        while(cur != NULL || !st.empty()){
+            
+            while(cur != NULL){
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            res.push_back(cur->val);
+            st.pop();
+            cur = cur->right;
+        }
+        return res;
+    }
+};
