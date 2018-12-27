@@ -1,0 +1,36 @@
+1. Recuresive
+
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(root == NULL) return res;
+        vector<int> res_left = postorderTraversal(root->left);
+        vector<int> res_right = postorderTraversal(root->right);
+        for(int i : res_left) res.push_back(i);
+        for(int i : res_right) res.push_back(i);
+        res.push_back(root->val);
+        return res;
+    }
+};
+
+2. Use stack
+
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(root == NULL) return res;
+        stack<TreeNode*> st;
+        st.push(root);
+        while(!st.empty()){
+            TreeNode* cur = st.top();
+            st.pop();
+            res.insert(res.begin(), cur->val);
+            if(cur->left != NULL) st.push(cur->left);
+            if(cur->right != NULL) st.push(cur->right);
+            
+        }
+        return res;
+    }
+};
