@@ -1,0 +1,23 @@
+Go through string t once to find the same characters of string s in string t and only let the boolean result to be true when we find the \
+last character of string s in string t. Also, the whole process can guarantee that we find the characters in order since every time we 
+start to find a new character, we start from the index where we ended finding the last character.
+
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        if(s.empty()) return true;
+        bool res = false;
+        int ptr = 0;
+        for(int i = 0; i < s.size(); ++i){
+            char cs = s[i];
+            for(; ptr < t.size(); ++ptr){
+                if(cs == t[ptr]){
+                    if(i == s.size() - 1) res = true;
+                    break;
+                }
+            }
+            ++ptr;
+        }
+        return res;
+    }
+};
