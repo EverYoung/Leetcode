@@ -1,0 +1,70 @@
+1. BFS
+The most difficult point of this problem is how you know which levels a node is in. Here I use a pair structure to keep a node's level with
+itself, and push the pair into queue, so that next time we pull out thr front pair, we will get a node as well as its level.
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(root == NULL) return res;
+        
+        res.push_back(vector<int>(1, root->val));
+        queue<pair<TreeNode*, int>> q;
+        q.push(pair<TreeNode*, int>(root, 0));
+
+        while(!q.empty()){
+            TreeNode* cur = q.front().first;
+            int cur_level = q.front().second;
+            q.pop();
+            if(res.size() == cur_level + 1 && (cur->left != NULL || cur->right != NULL)){
+                res.push_back(vector<int>());
+            }
+            if(cur->left != NULL){
+                res[cur_level + 1].push_back(cur->left->val);
+                q.push(pair<TreeNode*, int>(cur->left, cur_level + 1));
+            }
+            if(cur->right != NULL){
+                res[cur_level + 1].push_back(cur->right->val);
+                q.push(pair<TreeNode*, int>(cur->right, cur_level + 1));
+            }
+        }
+        return res;
+    }
+};
+
+2. BFS using a NULL marker
+Use a NULL to seperate different level
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(root == NULL) return res;
+        
+        queue<TreeNode*> q;
+        q.push(root);
+        q.push(NULL);
+        vector<int> cur_level;
+        
+        while(!q.empty()){
+            TreeNode* cur = q.front();
+            q.pop();
+            if(cur == NULL){
+                res.push_back(cur_level);
+                cur_level.clear();
+                if(!q.empty()) q.push(NULL);
+            }
+            else{
+                cur_level.push_back(cur->val);
+                if(cur->left != NULL) {
+                    q.push(cur->left);
+                }
+                if(cur->right != NULL) {
+                    q.push(cur->right);
+                }
+            }
+        }
+        
+        return res;
+    }
+};
