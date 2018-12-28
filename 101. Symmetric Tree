@@ -1,0 +1,44 @@
+1. DFS with left half and right half symmetrically traversed at the same time
+
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root == NULL || (root->left == NULL && root->right == NULL)) return true;
+        stack<TreeNode*> st;
+        if((root->left != NULL && root->right == NULL) || (root->left == NULL && root->right != NULL)) return false;
+        else{
+            if(root->left->val != root->right->val) return false;
+            else{
+                st.push(root->left);
+                st.push(root->right);
+            }
+        }
+        
+        while(!st.empty()){
+            TreeNode* pr = st.top();
+            st.pop();
+            TreeNode* pl = st.top();
+            st.pop();
+            // Check left->left and right->right
+            if(pl->left != NULL && pr->right != NULL){
+                if(pl->left->val != pr->right->val) return false;
+                else{
+                    st.push(pl->left);
+                    st.push(pr->right);
+                }
+            }
+            else if((pl->left == NULL && pr->right != NULL) || (pl->left != NULL && pr->right == NULL)) return false;
+            // Check left->right and right->left
+            if(pl->right != NULL && pr->left != NULL){
+                if(pl->right->val != pr->left->val) return false;
+                else{
+                    st.push(pl->right);
+                    st.push(pr->left);
+                }
+            }
+            else if((pl->right == NULL && pr->left != NULL) || (pl->right != NULL && pr->left == NULL)) return false;
+        }
+        return true;
+    }
+    
+};
