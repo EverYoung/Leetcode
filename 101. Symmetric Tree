@@ -42,3 +42,32 @@ public:
     }
     
 };
+
+
+Simplified:
+
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root == NULL) return true;
+        queue<TreeNode*> q;
+        q.push(root);
+        q.push(root);
+        
+        while(!q.empty()){
+            TreeNode* pr = q.front();
+            q.pop();
+            TreeNode* pl = q.front();
+            q.pop();
+            if(pr == NULL && pl == NULL) continue;
+            if(pr == NULL || pl == NULL) return false;
+            if(pr->val != pl->val) return false;
+            q.push(pl->left);
+            q.push(pr->right);
+            q.push(pl->right);
+            q.push(pr->left);
+        }
+        return true;
+    }
+    
+};
