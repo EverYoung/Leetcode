@@ -1,0 +1,60 @@
+1. Recursion
+
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> res;
+        if(root == NULL) return res;
+        findPath(res, "", root);
+        return res;
+    }
+    
+    void findPath(vector<string>& res, string path, TreeNode* root){
+        path += to_string(root->val);
+        if(root->left == NULL && root->right == NULL){
+            res.push_back(path);
+        }
+        else{
+            path += "->";
+            if(root->left != NULL) findPath(res, path, root->left);
+            if(root->right != NULL) findPath(res, path, root->right);
+        }
+    }
+};
+
+2. Two Stack
+
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> res;
+        if(root == NULL) return res;
+        
+        stack<TreeNode*> tree_st;
+        stack<string> path_st;
+        
+        tree_st.push(root);
+        path_st.push(to_string(root->val));
+        
+        while(!tree_st.empty()){
+            TreeNode* cur_node = tree_st.top();
+            tree_st.pop();
+            string cur_path = path_st.top();
+            path_st.pop();
+            if(cur_node->left == NULL && cur_node->right == NULL){
+                res.push_back(cur_path);
+            }
+            else{
+                if(cur_node->left != NULL){
+                    tree_st.push(cur_node->left);
+                    path_st.push(cur_path + "->" + to_string(cur_node->left->val));
+                }
+                if(cur_node->right != NULL) {
+                    tree_st.push(cur_node->right);
+                    path_st.push(cur_path + "->" + to_string(cur_node->right->val));
+                }
+            }
+        }
+        return res;
+    }
+};
