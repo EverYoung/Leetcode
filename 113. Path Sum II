@@ -1,0 +1,71 @@
+1. Recursion
+
+class Solution {
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int sum) {
+        vector<vector<int>> res;
+        if(root == NULL) return res;
+        vector<int> path;
+        findPath(root, sum, res, 0, path);
+        return res;
+    }
+    
+    void findPath(TreeNode* root, const int& target, vector<vector<int>>& res, int prev_sum, vector<int>& path){
+        int cur_sum = prev_sum + root->val;
+        path.push_back(root->val);
+        if(!root->left && !root->right){
+            if(cur_sum == target){
+                res.push_back(path);
+                path.pop_back();
+                return;
+            } 
+        }
+        if(root->left) findPath(root->left, target, res, cur_sum, path);
+        if(root->right) findPath(root->right, target, res, cur_sum, path);
+        path.pop_back();
+    }
+};
+
+2. Three Stacks
+
+class Solution {
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int sum) {
+        vector<vector<int>> res;
+        if(root == NULL) return res;
+        
+        stack<TreeNode*> node_st;
+        stack<int> sum_st;
+        stack<vector<int>> path_st;
+        node_st.push(root);
+        sum_st.push(root->val);
+        path_st.push(vector<int>(1, root->val));
+        
+        while(!node_st.empty()){
+            TreeNode* cur = node_st.top();
+            int cur_sum = sum_st.top();
+            vector<int> cur_path = path_st.top();
+            node_st.pop();
+            sum_st.pop();
+            path_st.pop();
+            if(!cur->left && !cur->right){
+                if(cur_sum == sum) res.push_back(cur_path);
+            }
+            if(cur->left){
+                node_st.push(cur->left);
+                sum_st.push(cur_sum + cur->left->val);
+                cur_path.push_back(cur->left->val);
+                path_st.push(cur_path);
+                cur_path.pop_back();
+            }
+            
+            if(cur->right){
+                node_st.push(cur->right);
+                sum_st.push(cur_sum + cur->right->val);
+                cur_path.push_back(cur->right->val);
+                path_st.push(cur_path);
+            }
+        }
+        return res;
+    }
+};
