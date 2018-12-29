@@ -1,0 +1,56 @@
+1. Two Stacks
+
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if(root == NULL) return false;
+        stack<TreeNode*> node_st;
+        stack<int> sum_st;
+        node_st.push(root);
+        sum_st.push(root->val);
+        
+        while(!node_st.empty()){
+            TreeNode* cur = node_st.top();
+            node_st.pop();
+            int cur_sum = sum_st.top();
+            sum_st.pop();
+            if(cur->left == NULL && cur->right == NULL){
+                if(cur_sum == sum) return true;
+            }
+            else{
+                if(cur->left != NULL){
+                    node_st.push(cur->left);
+                    sum_st.push(cur_sum + cur->left->val);
+                }
+                if(cur->right != NULL){
+                    node_st.push(cur->right);
+                    sum_st.push(cur_sum + cur->right->val);
+                }
+            }
+        }
+        return false;
+    }
+};
+
+2. Recursion
+
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int sum) {
+        if(root == NULL) return false;
+        return findPath(root, sum, 0);
+    }
+    
+    bool findPath(TreeNode* root, int sum, int path_sum){
+        bool res = false;
+        path_sum += root->val;
+        if(root->left == NULL && root->right == NULL){
+            if(sum == path_sum) return true;
+        }
+        else{
+            if(root->left != NULL) res = findPath(root->left, sum, path_sum);
+            if(root->right != NULL) res = res || findPath(root->right, sum, path_sum);
+        }
+        return res;
+    }
+};
