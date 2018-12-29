@@ -1,0 +1,51 @@
+1. Two Stacks
+
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        if(root == NULL) return 0;
+        int res = 0;
+        stack<TreeNode*> node_st;
+        stack<int> num_st;
+        node_st.push(root);
+        num_st.push(root->val);
+        
+        while(!node_st.empty()){
+            TreeNode* cur_node = node_st.top();
+            int cur_num = num_st.top();
+            node_st.pop();
+            num_st.pop();
+            if(!cur_node->left && !cur_node->right) res += cur_num;
+            else{
+                if(cur_node->left){
+                    node_st.push(cur_node->left);
+                    num_st.push(cur_num * 10 + cur_node->left->val);
+                }
+                if(cur_node->right){
+                    node_st.push(cur_node->right);
+                    num_st.push(cur_num * 10 + cur_node->right->val);
+                }
+            }
+        }
+        return res;
+    }
+};
+
+2. Recursion
+
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        if(root == NULL) return 0;
+        return findNum(root, 0);       
+    }
+    
+    int findNum(TreeNode* root, int prev_num){
+        int cur_num = prev_num * 10 + root->val;
+        if(!root->left && !root->right) return cur_num;
+        int res = 0;
+        if(root->left) res += findNum(root->left, cur_num);
+        if(root->right) res += findNum(root->right, cur_num);
+        return res;
+    }
+};
