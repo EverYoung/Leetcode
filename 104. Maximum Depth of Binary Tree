@@ -1,0 +1,29 @@
+1. DFS
+
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if(!root) return 0;
+        int max_len = 0;
+        dfs(root, 0, max_len);
+        return max_len;
+    }
+    
+    void dfs(TreeNode* cur, int len, int& max_len){
+        if(!cur) return;
+        len++;
+        if(!cur->left && !cur->right) max_len = max(max_len, len);
+        dfs(cur->left, len, max_len);
+        dfs(cur->right, len, max_len);
+    }
+};
+
+2. Recursion
+
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if(!root) return 0;
+        return max(maxDepth(root->left) + 1, maxDepth(root->right) + 1);
+    }
+};
