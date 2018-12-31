@@ -1,0 +1,25 @@
+1. Recursion
+
+class Solution {
+public:
+    int countUnivalSubtrees(TreeNode* root) {
+        if(!root) return 0;
+        int res = 0;
+        isUni(root, res);
+        return res;
+    }
+    
+    bool isUni(TreeNode* root, int& res){
+        if(!root->left && !root->right){
+            res++;
+            return true;
+        }
+        bool left_uni = true, right_uni = true;
+        if(root->left) left_uni = isUni(root->left, res) && root->val == root->left->val;
+        if(root->right) right_uni = isUni(root->right, res) && root->val == root->right->val;
+        if(left_uni && right_uni){
+            res++;
+        }
+        return left_uni && right_uni;
+    }
+};
