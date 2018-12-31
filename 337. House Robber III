@@ -1,0 +1,76 @@
+1. Naive Recuision
+
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+        int val = 0;
+        if(root->left) val += rob(root->left->left) + rob(root->left->right);
+        if(root->right) val += rob(root->right->left) + rob(root->right->right);
+        return max(root->val + val, rob(root->left) + rob(root->right));
+    }
+};
+
+2. Dynamic Programming Recursion
+Avoid recomputing overlapped subproblem by using hashmap
+
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+        unordered_map<TreeNode*, int> hashmap;
+        return robHelper(root, hashmap);
+    }
+    
+    int robHelper(TreeNode* root, unordered_map<TreeNode*, int>& hashmap){
+        if(!root) return 0;
+        if(hashmap.find(root) != hashmap.end()) return hashmap[root];
+        int val = 0;
+        if(root->left) val += robHelper(root->left->left, hashmap) + robHelper(root->left->right, hashmap);
+        if(root->right) val += robHelper(root->right->left, hashmap) + robHelper(root->right->right, hashmap);
+        val = max(root->val + val, robHelper(root->left, hashmap) + robHelper(root->right, hashmap));
+        hashmap[root] = val;
+        
+        return val;
+    }
+};
+
+3. Optimized Recuision
+
+class Solution {
+public:
+    int findMax(TreeNode* root, int& l_value, int& r_value) {
+        if(!root) return 0;
+        int ll_value = 0, lr_value = 0, rl_value = 0, rr_value = 0;
+        l_value = findMax(root->left, ll_value, lr_value);
+        r_value = findMax(root->right, rl_value, rr_value);
+        return max(root->val + ll_value + lr_value + rl_value + rr_value, l_value + r_value);
+    }
+
+    int rob(TreeNode* root) {
+        int l_value = 0, r_value = 0;
+        return findMax(root, l_value, r_value);
+    }
+};
+
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        if(!root) return 0;
+        vector<int> res = robHelper(root);
+        return max(res[0], res[1]);
+    }
+    
+    vector<int> robHelper(TreeNode* root){
+        vector<int> res(2, 0);
+        if(!root) return res;
+        
+        vector<int> left_res = robHelper(root->left);
+        vector<int> right_res = robHelper(root->right);     
+        
+        res[0] = max(left_res[0], left_res[1]) + max(right_res[0], right_res[1]);
+        res[1] = root->val + left_res[0] + right_res[0];
+        
+        return res;
+    }
+};
