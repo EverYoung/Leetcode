@@ -1,0 +1,70 @@
+1. Naive Iteration
+
+class Solution {
+public:
+    vector<vector<int>> findLeaves(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        queue<TreeNode*> q;
+        while(root){
+            vector<int> leaves;
+            q.push(root);
+            while(!q.empty()){
+                TreeNode* cur = q.front();
+                q.pop();
+                if(isLeaf(cur)){
+                    leaves.push_back(cur->val);
+                    if(cur == root) root = NULL;
+                    continue;
+                }
+                if(cur->left) {
+                    q.push(cur->left);
+                    if(isLeaf(cur->left)) {
+                        cur->left = NULL;
+                    }
+                }
+                if(cur->right) {
+                    q.push(cur->right);
+                    if(isLeaf(cur->right)) {
+                        cur->right = NULL;
+                    }
+                }
+            }
+            res.push_back(leaves);
+        }
+        return res;
+    }
+    
+    bool isLeaf(TreeNode* node){
+        return !node->left && !node->right;
+    }
+}; 
+
+
+2. Recursion
+The helper function "removeLeaf" return type TreeNode* . If we come to a leaf, then we return NULL, which can function as removal of this
+leaf.
+
+class Solution {
+public:
+    vector<vector<int>> findLeaves(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        while(root){
+            vector<int> leaves;
+            root = removeLeaf(root, leaves);
+            res.push_back(leaves);
+        }
+        return res;
+    }
+    
+    TreeNode* removeLeaf(TreeNode* root, vector<int>& leaves){
+        if(!root->left && !root->right){
+            leaves.push_back(root->val);
+            return NULL;
+        }
+        if(root->left) root->left = removeLeaf(root->left, leaves);
+        if(root->right) root->right = removeLeaf(root->right, leaves);
+        return root;
+    }
+}; 
