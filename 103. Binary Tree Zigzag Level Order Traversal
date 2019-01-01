@@ -1,0 +1,86 @@
+1. BFS using recursion
+Do a bfs and then naively reverse all the vector that need the reverse order
+
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        bfs(root, res, 1);
+        for(int i = 1; i < res.size(); i+= 2) reverse(res[i].begin(), res[i].end());
+        return res;
+    }
+    
+    void bfs(TreeNode* cur, vector<vector<int>>& res, int cur_level){
+        if(!cur) return;
+        if(cur_level > res.size()){
+            res.push_back(vector<int>());
+        }
+        res[cur_level - 1].push_back(cur->val);
+        bfs(cur->left, res, cur_level + 1);
+        bfs(cur->right, res, cur_level + 1);
+    }
+};
+
+2. BFS using queue
+
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        queue<TreeNode*> q;
+        q.push(root);
+        q.push(NULL);
+        vector<int> vals;
+        bool flip = false;
+        while(!q.empty()){
+            TreeNode* cur = q.front();
+            q.pop();
+            if(cur == NULL){
+                if(!q.empty()) q.push(NULL);
+                res.push_back(vals);
+                vals.clear();
+                flip = !flip;
+            }
+            else{
+                if(flip) vals.insert(vals.begin(), cur->val);
+                else vals.push_back(cur->val);
+                if(cur->left) q.push(cur->left);
+                if(cur->right) q.push(cur->right);
+            }
+        }
+        return res;
+    }
+    
+};
+
+3. Optimized: BFS using queue withour reverse
+
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        queue<TreeNode*> q;
+        q.push(root);
+        vector<int> vals;
+        bool flip = false;
+        while(!q.empty()){
+            int size = q.size();
+            vector<int> level(size);
+            for(int i = 0; i < size; i++){
+                TreeNode* cur = q.front();
+                q.pop();
+                int index = flip ? size - 1 - i : i;
+                level[index] = cur->val;
+                if(cur->left) q.push(cur->left);
+                if(cur->right) q.push(cur->right);
+            }
+            res.push_back(level);
+            flip = !flip;
+        }
+        return res;
+    }
+    
+};
