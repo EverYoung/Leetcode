@@ -1,0 +1,15 @@
+1. DFS with recursion
+
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        return dfs(root, NULL, NULL);
+    }
+    
+    bool dfs(TreeNode* cur, TreeNode* min_node, TreeNode* max_node){
+        if(!cur) return true;
+        if((min_node && cur->val <= min_node->val) || (max_node && cur->val >= max_node->val)) return false;
+        return dfs(cur->left, min_node, cur) && dfs(cur->right, cur, max_node);
+    }
+};
+
