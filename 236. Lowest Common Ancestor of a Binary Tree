@@ -1,0 +1,75 @@
+1. Recursive:
+
+Divide & Conquer:
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root || root == p || root == q) return root;
+        TreeNode* left = lowestCommonAncestor(root->left, p, q);
+        TreeNode* right = lowestCommonAncestor(root->right, p, q);
+        if(left && right) return root;
+        else if(left) return left;
+        else if(right) return right;
+        else return NULL;
+    }
+};
+
+Traversal:
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        helper(root, p, q);
+        return res;
+    }
+    
+    bool helper(TreeNode* cur, TreeNode* p, TreeNode* q){
+        if(!cur) return false;
+        if(cur == p || cur == q){
+            res = cur;
+            return true;
+        }
+        bool left = helper(cur->left, p, q);
+        bool right = helper(cur->right, p, q);
+        if(left && right) res = cur;
+        return left || right;
+        
+    }
+
+private:
+    TreeNode* res = NULL;
+};
+
+2. Iterative:
+Need to use a map to record the path or say each node's parent. And then we need to traverse the map and create a path for one node and
+try to find the first common ancestor appear on that path.
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        unordered_set<TreeNode*> ancestors;
+        unordered_map<TreeNode*, TreeNode*> parent;
+        parent[root] = NULL;
+        stack<TreeNode*> st;
+        st.push(root);
+        while(parent.find(p) == parent.end() || parent.find(q) == parent.end()){
+            TreeNode* cur = st.top();
+            st.pop();
+            if(cur->left){
+                parent[cur->left] = cur;
+                st.push(cur->left);
+            }
+            if(cur->right){
+                parent[cur->right] = cur;
+                st.push(cur->right);
+            }
+        }
+        while(p){
+            ancestors.insert(p);
+            p = parent[p];
+        }
+        while(ancestors.find(q) == ancestors.end()){
+            q = parent[q];
+        }
+        return q;
+    }
+};
