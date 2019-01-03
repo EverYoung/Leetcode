@@ -1,5 +1,6 @@
 1. Recuresive
 
+Divide & Conquer:
 class Solution {
 public:
     vector<int> postorderTraversal(TreeNode* root) {
@@ -11,6 +12,24 @@ public:
         for(int i : res_right) res.push_back(i);
         res.push_back(root->val);
         return res;
+    }
+};
+
+Traversal:
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(!root) return res;
+        helper(root, res);
+        return res;
+    }
+    
+    void helper(TreeNode* cur, vector<int>& res){
+        if(!cur) return;
+        helper(cur->left, res);
+        helper(cur->right, res);
+        res.push_back(cur->val);
     }
 };
 
