@@ -1,22 +1,35 @@
 1. Recursive
 
+Divide & Conquer:
 class Solution {
 public:
     vector<int> inorderTraversal(TreeNode* root) {
         vector<int> res;
-        if(root == NULL) return res;
-        
-        vector<int> res_left = inorderTraversal(root->left);
-        vector<int> res_right = inorderTraversal(root->right);
-        
-        for(int i : res_left){
-            res.push_back(i);
-        }
+        if(!root) return res;
+        vector<int> left = inorderTraversal(root->left);
+        vector<int> right = inorderTraversal(root->right);
+        for(int node : left) res.push_back(node);
         res.push_back(root->val);
-        for(int i : res_right){
-            res.push_back(i);
-        }
+        for(int node : right) res.push_back(node);
         return res;
+    }
+};
+
+Traversal:
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(!root) return res;
+        helper(root, res);
+        return res;
+    }
+    
+    void helper(TreeNode* cur, vector<int>& res){
+        if(!cur) return;
+        helper(cur->left, res);
+        res.push_back(cur->val);
+        helper(cur->right, res);
     }
 };
 
