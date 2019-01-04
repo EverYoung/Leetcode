@@ -5,8 +5,7 @@ public:
 
     // Encodes a tree to a single string.
     string serialize(TreeNode* root) {
-        int height = findHeight(root);
-        if(height == 0) return "";
+        if(!root) return "";
         string res = to_string(root->val) + " ";
         queue<TreeNode*> q;
         q.push(root);
@@ -59,9 +58,66 @@ public:
         }
         return root;
     }
-    
-    int findHeight(TreeNode* root){
-        if(!root) return 0;
-        else return 1 + max(findHeight(root->left), findHeight(root->right));
+};
+
+2. DFS
+
+class Codec {
+public:
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if(!root) return "";
+        string res = "";
+        stack<TreeNode*> st;
+        st.push(root);
+        while(!st.empty()){
+            TreeNode* cur = st.top();
+            st.pop();
+            if(cur){
+                res += to_string(cur->val) + " ";
+                st.push(cur->right);
+                st.push(cur->left);
+            }
+            else res += "N ";
+        }
+        return res;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data.empty()) return NULL;
+        
+        istringstream in(data);
+        vector<string> strs;
+        string val;
+        while(in >> val){
+            strs.push_back(val);
+        }
+        TreeNode* root = new TreeNode(stoi(strs[0]));
+        stack<TreeNode*> st;
+        st.push(root);
+        TreeNode* cur = root;
+        
+        int count = 1;
+        while(count < strs.size() - 1){
+            while(count < strs.size() - 1 && strs[count] != "N"){
+                cur->left = new TreeNode(stoi(strs[count]));
+                cur = cur->left;
+                st.push(cur);
+                count++;
+            }
+            while(count < strs.size() - 1 && strs[count] == "N"){
+                cur = st.top();
+                st.pop();
+                count++;
+            }
+            if(count < strs.size() - 1){
+                cur->right = new TreeNode(stoi(strs[count]));
+                st.push(cur->right);
+                cur = cur->right;
+                count++;
+            }
+        }
+        return root;
     }
 };
