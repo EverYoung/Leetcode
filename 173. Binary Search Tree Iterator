@@ -1,0 +1,69 @@
+1. Use Stack
+
+class BSTIterator {
+public:
+    BSTIterator(TreeNode* root) {
+        iter = root;
+        while(iter){
+            st.push(iter);
+            iter = iter->left;
+        }
+    }
+    
+    /** @return the next smallest number */
+    int next() {
+        while(iter){
+            st.push(iter);
+            iter = iter->left;
+        }
+        iter = st.top();
+        st.pop();
+        int val = iter->val;
+        iter = iter->right;
+        return val;
+    }
+    
+    /** @return whether we have a next smallest number */
+    bool hasNext() {
+        return !(st.empty() && !iter);
+    }
+private:
+    TreeNode* iter;
+    stack<TreeNode*> st;
+};
+
+Optimized: without using a pointer "iter"
+
+class BSTIterator {
+public:
+    BSTIterator(TreeNode* root) {
+        TreeNode* iter = root;
+        while(iter){
+            st.push(iter);
+            iter = iter->left;
+        }
+    }
+    
+    /** @return the next smallest number */
+    int next() {
+        if(!st.empty()){
+            TreeNode* cur = st.top();
+            st.pop();
+            int val = cur->val;
+            cur = cur->right;
+            while(cur){
+                st.push(cur);
+                cur = cur->left;
+            }
+            return val;
+        }
+        return -1;
+    }
+    
+    /** @return whether we have a next smallest number */
+    bool hasNext() {
+        return !st.empty();
+    }
+private:
+    stack<TreeNode*> st;
+};
