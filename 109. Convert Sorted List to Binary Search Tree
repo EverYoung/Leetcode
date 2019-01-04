@@ -1,0 +1,76 @@
+1. Recusion
+Use fast and slow pointers to locate middle node.
+
+class Solution {
+public:
+    TreeNode* sortedListToBST(ListNode* head) {
+        if(!head) return NULL;
+        ListNode* fast = head;
+        ListNode* slow = head;
+        ListNode* prev_slow = NULL;
+        while(fast && fast->next){
+            fast = fast->next->next;
+            prev_slow = slow;
+            slow = slow->next;
+        }
+        if(prev_slow) prev_slow->next = NULL;
+        TreeNode* cur = new TreeNode(slow->val);
+        if(head == slow) return cur;
+        cur->left = sortedListToBST(head);
+        cur->right = sortedListToBST(slow->next);
+        return cur;
+    }
+};
+
+2. Recursion but first convert list to array
+
+class Solution {
+public:
+    TreeNode* sortedListToBST(ListNode* head) {
+        vector<int> values;
+        while(head){
+            values.push_back(head->val);
+            head = head->next;
+        }
+        return createTree(values, 0, values.size() - 1);
+    }
+    
+    TreeNode* createTree(vector<int>& nums, int left, int right){
+        if(left > right) return NULL;
+        int mid = left + (right - left) / 2;
+        TreeNode* cur = new TreeNode(nums[mid]);
+        cur->left = createTree(nums, left, mid - 1);
+        cur->right = createTree(nums, mid + 1, right);
+        return cur;    
+    }
+};
+
+3. Inorder Traversal
+class Solution {
+public:
+    TreeNode* sortedListToBST(ListNode* head) {
+        int len = 0;
+        ListNode* ptr = head;
+        while(ptr){
+            len++;
+            ptr = ptr->next;
+        }
+        list = head;
+        return createTree(0, len - 1);
+    }
+    
+    TreeNode* createTree(int left, int right){
+        if(left > right) return NULL;
+        int mid = left + (right - left) / 2;
+        TreeNode* left_tree = createTree(left, mid - 1);
+        TreeNode* cur = new TreeNode(list->val);
+        cur->left = left_tree;
+        list = list->next;
+        TreeNode* right_tree = createTree(mid + 1, right);
+        cur->right = right_tree;
+        return cur;    
+    }
+    
+private:
+    ListNode* list;
+};
