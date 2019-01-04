@@ -1,0 +1,67 @@
+1. BFS
+
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        int height = findHeight(root);
+        if(height == 0) return "";
+        string res = to_string(root->val) + " ";
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* cur = q.front();
+            q.pop();
+            if(cur->left == NULL) res += "N ";
+            else{
+                q.push(cur->left);
+                res += to_string(cur->left->val) + " ";
+            }
+            if(cur->right == NULL) res += "N ";
+            else{
+                q.push(cur->right);
+                res += to_string(cur->right->val) + " ";
+            }
+        }
+        return res;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data.empty()) return NULL;
+        istringstream in(data);
+        vector<string> strs;
+        string val;
+        while(in >> val){
+            strs.push_back(val);
+        }
+        
+        TreeNode* root = new TreeNode(stoi(strs[0]));
+        queue<TreeNode*> q;
+        q.push(root);
+        int count = 1;
+        while(!q.empty() && count < strs.size()){
+            TreeNode* cur = q.front();
+            q.pop();
+            if(strs[count] != "N"){
+                TreeNode* left = new TreeNode(stoi(strs[count]));
+                cur->left = left;
+                q.push(left);
+            }
+            count++;
+            if(strs[count] != "N"){
+                TreeNode* right = new TreeNode(stoi(strs[count]));
+                cur->right = right;
+                q.push(right);
+            }
+            count++;
+        }
+        return root;
+    }
+    
+    int findHeight(TreeNode* root){
+        if(!root) return 0;
+        else return 1 + max(findHeight(root->left), findHeight(root->right));
+    }
+};
