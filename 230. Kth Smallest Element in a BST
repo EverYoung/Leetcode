@@ -1,0 +1,86 @@
+1. Recursive
+Traversal:
+
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int counter = 0, res = -1;
+        helper(root, k, counter, res);
+        return res;
+    }
+    
+    void helper(TreeNode* cur, int k, int& counter, int& res){
+        if(!cur) return;
+        helper(cur->left, k, counter, res);
+        counter++;
+        if(counter == k) res = cur->val;
+        else if(counter > k) return;
+        helper(cur->right, k, counter, res);
+    }
+};
+
+2. Iterative
+
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        stack<TreeNode*> st;
+        TreeNode* node = root;
+        while(node){
+            st.push(node);
+            node = node->left;
+        }
+        int count = 0;
+        while(!st.empty()){
+            TreeNode* cur = st.top();
+            st.pop();
+            count++;
+            if(count == k) return cur->val;
+            cur = cur->right;
+            while(cur){
+                st.push(cur);
+                cur = cur->left;
+            }
+        }
+        return -1;
+    }
+};
+
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        while(!st.empty() || cur){
+            while(cur){
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            if(--k == 0) return cur->val;
+            cur = cur->right;
+        }
+        return -1;
+    }
+};
+
+3. Use BST property:
+Find the number of nodes in left subtree. If the number if larger than or equal to k, then the kth smallest number must be in the left
+subtree; otherwise if the number plus 1 is still less than k, then the kth smallest number must be the (k-1-left_nodes)th smallest 
+number in right subtree. If it is neither of these cases, then the root must be the kth smallest number.
+
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int left_nodes = findNumNodes(root->left);
+        if(left_nodes >= k) return kthSmallest(root->left, k);
+        else if(left_nodes + 1 < k) return kthSmallest(root->right, k - 1 - left_nodes);
+        else return root->val;
+    }
+    
+    int findNumNodes(TreeNode* root){
+        if(!root) return 0;
+        else return 1 + findNumNodes(root->left) + findNumNodes(root->right);
+    }
+};
