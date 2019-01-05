@@ -1,0 +1,61 @@
+1. Use Two Stacks
+For a BST, if we do inorder traversal we can get all the nodes in ascending(successors) order; if we do reverse inorder traversal we can
+get all the nodes in descending(predeccessor) order. Then we can traverse the BST twice inorder and reverse inorder. 
+Since the two traversals' results are symmetric to each other, so we can terminate the traversal earlier when the current value is larger
+than the target or become less than the target.
+We put all the nodes in stacks, for inorder traversal, nodes at the top of the stack will be the one closest to the target which is less 
+than the target; on the contrary, for reverse inorder traversal, nodes at the top of the stack will be the one closest to the target 
+which is larger than the target.
+
+class Solution {
+public:
+    vector<int> closestKValues(TreeNode* root, double target, int k) {
+        stack<TreeNode*> pred_st;
+        stack<TreeNode*> succ_st;
+        
+        inorder(root, target, pred_st, false);
+        inorder(root, target, succ_st, true);
+        
+        vector<int> res;
+        while(k > 0){
+            if(pred_st.empty()){
+                res.push_back(succ_st.top()->val);
+                succ_st.pop();
+            } 
+            else if(succ_st.empty()){
+                res.push_back(pred_st.top()->val);
+                pred_st.pop();
+            }
+            else{
+                int pred = pred_st.top()->val;
+                int succ = succ_st.top()->val;
+                if(abs(target - pred) > abs(target - succ)){
+                    res.push_back(succ);
+                    succ_st.pop();
+                }
+                else{
+                    res.push_back(pred);
+                    pred_st.pop();
+                }
+            }
+            k--;
+        }
+        return res;
+    }
+    
+    void inorder(TreeNode* root, double target, stack<TreeNode*>& st, bool reverse){
+        if(!root) return;
+        if(!reverse){
+            inorder(root->left, target, st, false);
+            if(root->val >= target) return;
+            st.push(root);
+            inorder(root->right, target, st, false);
+        }
+        else{
+            inorder(root->right, target, st, true);
+            if(root->val < target) return;
+            st.push(root);
+            inorder(root->left, target, st, true);
+        }
+    }
+};
