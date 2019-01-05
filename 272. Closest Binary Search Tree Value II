@@ -59,3 +59,31 @@ public:
         }
     }
 };
+
+2. Use Priority Queue
+Traverse the whole BST and use a priority queue to store the closest k values
+
+class Solution {
+public: 
+    vector<int> closestKValues(TreeNode* root, double target, int k) {
+        priority_queue<pair<double, int>> pq;
+        dfs(root, target, pq, k);
+        vector<int> res;
+        while(!pq.empty()){
+            res.push_back(pq.top().second);
+            pq.pop();
+        }
+        return res;
+    }
+    
+    void dfs(TreeNode* root, double target, priority_queue<pair<double, int>>& pq, int k){
+        if(!root) return;
+        
+        dfs(root->left, target, pq, k);
+        pq.push(pair<double, int>(abs(root->val - target), root->val));
+        if(pq.size() > k) pq.pop();
+        dfs(root->right, target, pq, k);
+        
+        
+    }
+};
