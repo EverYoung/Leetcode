@@ -1,0 +1,20 @@
+class Solution {
+public:
+    TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
+        TreeNode* node = root;
+        TreeNode* successor = NULL;
+        while(node != p){
+            if(p->val > node->val && node->right) node = node->right;
+            else if(p->val < node->val && node->left){
+                successor = node;
+                node = node->left;
+            }
+        }
+        if(node->right != NULL){
+            node = node->right;
+            while(node->left) node = node->left;
+            return node;
+        }
+        return successor;
+    }
+};
