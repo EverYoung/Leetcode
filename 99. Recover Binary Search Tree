@@ -1,0 +1,41 @@
+1. Naive Inorder Traversal
+Do an inorder traversal to find the two swapped nodes and swap their values back
+
+class Solution {
+public:
+    void recoverTree(TreeNode* root) {
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        TreeNode* swapped_large = NULL;
+        TreeNode* swapped_small = NULL;
+        TreeNode* prev = NULL;
+        // Inorder Traversal to find two swapped nodes
+        while(!st.empty() || cur){
+            while(cur){
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            if(!prev){
+                prev = cur;
+            }
+            else{
+                if(cur->val < prev->val){
+                    if(!swapped_large){
+                        swapped_large = prev;
+                        swapped_small = cur;
+                    }
+                    else swapped_small = cur;
+                }
+                prev = cur;
+            }
+            cur = cur->right;
+        }
+        
+        // Swap back, simply swap their values instead of changing stucture;
+        int temp = swapped_large->val;
+        swapped_large->val = swapped_small->val;
+        swapped_small->val = temp;
+    }
+};
