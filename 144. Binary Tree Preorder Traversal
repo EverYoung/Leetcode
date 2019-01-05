@@ -59,32 +59,27 @@ public:
 };
 
 3. Morris Traversal
-
-
 class Solution {
 public:
     vector<int> preorderTraversal(TreeNode* root) {
         vector<int> res;
-        if(root == NULL) return res;
-        
-        while(root != NULL){
-            if(root->left == NULL){
-                res.push_back(root->val);
-                root = root->right;
+        TreeNode* cur = root;
+        while(cur){
+            if(!cur->left){
+                res.push_back(cur->val);
+                cur = cur->right;
             }
             else{
-                TreeNode* predecessor = root->left;
-                while(predecessor->right != NULL && predecessor->right != root){
-                    predecessor = predecessor->right;
-                }
-                if(predecessor->right == NULL){
-                    res.push_back(root->val);
-                    predecessor->right = root;
-                    root = root->left;
+                TreeNode* pred = cur->left;
+                while(pred->right && pred->right != cur) pred = pred->right;
+                if(!pred->right) {
+                    pred->right = cur;
+                    res.push_back(cur->val);
+                    cur = cur->left;
                 }
                 else{
-                    predecessor->right = NULL;
-                    root = root->right;
+                    pred->right = NULL;
+                    cur = cur->right;
                 }
             }
         }
