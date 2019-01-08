@@ -1,0 +1,76 @@
+1. DFS
+Time Complexity: O(m*n), Space Complexity: O(m*n); In each dfs, the operation of grid and comparison take constant time. From a higher view,
+the once we start a dfs recursion, it is going to traverse the whole island. After that we back to the main function loop, in which some of
+those island's nodes may be traversed again. Therefore, each node may be traversed twice. And the dfs in worst case can go to m*n deep.
+
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int count = 0;
+        int x_size = grid.size();
+        if(x_size == 0) return count;
+        int y_size = grid[0].size();
+        for(int i = 0; i < x_size; i++){
+            for(int j = 0; j < y_size; j++){
+                if(grid[i][j] == '1'){
+                    dfs(grid, i, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    
+    void dfs(vector<vector<char>>& grid, int x, int y){
+        int x_size = grid.size();
+        int y_size = grid[0].size();
+        grid[x][y] = 'X';
+        if(x < x_size - 1 && grid[x + 1][y] == '1') dfs(grid, x + 1, y);
+        if(y < y_size - 1 && grid[x][y + 1] == '1') dfs(grid, x, y + 1);
+        if(x > 0 && grid[x - 1][y] == '1') dfs(grid, x - 1, y);
+        if(y > 0 && grid[x][y - 1] == '1') dfs(grid, x, y - 1);
+    }
+};
+
+2. BFS
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int count = 0;
+        int x_size = grid.size();
+        if(x_size == 0) return count;
+        int y_size = grid[0].size();
+        
+        for(int i = 0; i < x_size; i++){
+            for(int j = 0; j < y_size; j++){
+                if(grid[i][j] == '1'){
+                    count++;
+                    queue<pair<int, int>> q;
+                    q.push(pair<int, int>(i, j));
+                    while(!q.empty()){
+                        int cur_x = q.front().first;
+                        int cur_y = q.front().second;
+                        q.pop();
+                        if(cur_x > 0 && grid[cur_x - 1][cur_y] == '1'){
+                            grid[cur_x - 1][cur_y] = 'X';
+                            q.push(pair<int, int>(cur_x - 1, cur_y));
+                        }
+                        if(cur_y > 0 && grid[cur_x][cur_y - 1] == '1'){
+                            grid[cur_x][cur_y - 1] = 'X';
+                            q.push(pair<int, int>(cur_x, cur_y - 1));
+                        }
+                        if(cur_x < x_size - 1 && grid[cur_x + 1][cur_y] == '1'){
+                            grid[cur_x + 1][cur_y] = 'X';
+                            q.push(pair<int, int>(cur_x + 1, cur_y));
+                        }
+                        if(cur_y < y_size - 1 && grid[cur_x][cur_y + 1] == '1'){
+                            grid[cur_x][cur_y + 1] = 'X';
+                            q.push(pair<int, int>(cur_x, cur_y + 1));
+                        }
+                    }
+                }
+            }
+        }
+        return count;
+    }
+};
