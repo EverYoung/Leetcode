@@ -1,0 +1,19 @@
+1. DFS
+
+class Solution {
+public:
+    int depthSum(vector<NestedInteger>& nestedList) {
+        int sum = 0;
+        for(NestedInteger ni : nestedList) sum += dfs(ni, 1);
+        return sum;
+    }
+    
+    int dfs(NestedInteger nest, int depth){
+        int sum = 0;
+        if(nest.isInteger()) sum += nest.getInteger() * depth;
+        else{
+            for(NestedInteger ni : nest.getList()) sum += dfs(ni, depth + 1);
+        }
+        return sum;
+    }
+};
