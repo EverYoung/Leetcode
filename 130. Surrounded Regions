@@ -1,0 +1,102 @@
+1. DFS
+First find those region that has node on the boundary, turn them into another character. And then traverse the board, turn all 'O' to 'X', 
+leave 'X' as they are and turn all the other characters back to 'O'.
+
+class Solution {
+public:
+    void solve(vector<vector<char>>& board) {
+        int x_size = board.size();
+        if(x_size == 0) return;
+        int y_size = board[0].size();
+        for(int i = 0; i < x_size; i++){
+            if(board[i][0] == 'O') dfs(board, i, 0);
+            if(board[i][y_size - 1] == 'O') dfs(board, i, y_size - 1);
+        }
+        for(int i = 0; i < y_size; i++){
+            if(board[0][i] == 'O') dfs(board, 0, i);
+            if(board[x_size - 1][i] == 'O') dfs(board, x_size - 1, i);
+        }
+        for(int i = 0; i < x_size; i++){
+            for(int j = 0; j < y_size; j++){
+                if(board[i][j] == 'M') board[i][j] = 'O';
+                else if(board[i][j] == 'O') board[i][j] = 'X';
+            }
+        }
+    }
+    
+    void dfs(vector<vector<char>>& board, int x, int y){
+        int x_size = board.size();
+        int y_size = board[0].size();
+        
+        board[x][y] = 'M';
+        if(x > 0 && board[x - 1][y] == 'O') dfs(board, x - 1, y);
+        if(y > 0 && board[x][y - 1] == 'O') dfs(board, x, y - 1);
+        if(x < x_size - 1 && board[x + 1][y] == 'O') dfs(board, x + 1, y);
+        if(y < y_size - 1 && board[x][y + 1] == 'O') dfs(board, x, y + 1);
+        
+    }
+};
+
+2. BFS
+
+class Solution {
+public:
+    void solve(vector<vector<char>>& board) {
+        int x_size = board.size();
+        if(x_size == 0) return;
+        int y_size = board[0].size();
+
+        for(int i = 0; i < x_size; i++){
+            if(board[i][0] == 'O') bfs(board, i, 0);
+            if(board[i][y_size - 1] == 'O') bfs(board, i, y_size - 1);
+        }
+
+        for(int i = 0; i < y_size; i++){
+            if(board[0][i] == 'O') bfs(board, 0, i);
+            if(board[x_size - 1][i] == 'O') bfs(board, x_size - 1, i);
+        }
+
+        for(int i = 0; i < x_size; i++){
+            for(int j = 0; j < y_size; j++){
+                if(board[i][j] == 'M') board[i][j] = 'O';
+                else if(board[i][j] == 'O') board[i][j] = 'X';
+            }
+        }
+    }
+    
+    void bfs(vector<vector<char>>& board, int x, int y){
+        int x_size = board.size();
+        int y_size = board[0].size();
+        
+        queue<pair<int, int>> q;
+        q.push(pair<int, int>(x, y));
+        board[x][y] = 'M';
+        while(!q.empty()){
+            int cur_x = q.front().first;
+            int cur_y = q.front().second;
+            q.pop();
+            
+            if(cur_x > 0 && board[cur_x - 1][cur_y] == 'O'){
+                board[cur_x - 1][cur_y] = 'M';
+                q.push(pair<int, int>(cur_x - 1, cur_y));
+            }
+            
+            if(cur_y > 0 && board[cur_x][cur_y - 1] == 'O'){
+                board[cur_x][cur_y - 1] = 'M';
+                q.push(pair<int, int>(cur_x, cur_y - 1));
+            }
+            
+            if(cur_x < x_size - 1 && board[cur_x + 1][cur_y] == 'O'){
+                board[cur_x + 1][cur_y] = 'M';
+                q.push(pair<int, int>(cur_x + 1, cur_y));
+            }
+
+            if(cur_y < y_size - 1 && board[cur_x][cur_y + 1] == 'O'){
+                board[cur_x][cur_y + 1] = 'M';
+                q.push(pair<int, int>(cur_x, cur_y + 1));
+            }
+            
+
+        }
+    }
+};
