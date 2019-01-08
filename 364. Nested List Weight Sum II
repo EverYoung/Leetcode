@@ -1,0 +1,77 @@
+1. DFS Two Passes
+First DFS finds the depth of nested list, and second DFS compute the sum while decrease the depth by 1 each time recursively call DFS.
+
+class Solution {
+public:
+    int depthSumInverse(vector<NestedInteger>& nestedList) {
+        int depth = findDepth(nestedList);
+        return dfs(nestedList, depth);
+    }
+    
+    int dfs(vector<NestedInteger>& nestedList, int depth){
+        int sum = 0;
+        for(NestedInteger ni : nestedList){
+            if(!ni.isInteger()) sum += dfs(ni.getList(), depth - 1);
+            else sum += ni.getInteger() * depth;
+        }
+        return sum;
+    }
+    
+    int findDepth(vector<NestedInteger>& nestedList){
+        int max_depth = 0;
+        for(NestedInteger ni : nestedList){
+            if(!ni.isInteger()) max_depth = max(max_depth, findDepth(ni.getList())); 
+        }
+        return max_depth + 1;
+    }
+};
+
+2. DFS One Pass with level sum
+Use DFS to compute the sum of integers at each level, and then compute the sum according to level.
+
+class Solution {
+public:
+    int depthSumInverse(vector<NestedInteger>& nestedList) {
+        vector<int> level_sum;
+        dfs(nestedList, 1, level_sum);
+        int sum = 0;
+        for(int i = level_sum.size() - 1, level = 1; i >= 0; i--, level++){
+            sum += level_sum[i] * level;
+        }
+        return sum;
+    }
+    
+    void dfs(vector<NestedInteger>& nestedList, int depth, vector<int>& level_sum){
+        if(level_sum.size() < depth) level_sum.resize(depth);
+        for(NestedInteger ni : nestedList){
+            if(!ni.isInteger()) dfs(ni.getList(), depth + 1, level_sum);
+            else level_sum[depth - 1] += ni.getInteger();
+        }
+    }
+};
+
+3. DFS One Pass with math
+1x + 2y + 3z = (3 + 1) * (x + y + z) - (3x + 2y + 1z);
+1x + 2y + 3z + ... + max_depth * ? = (max_depth + 1) * (x + y + z + ... + ?) - (max_depth  * x + (max_depth - 1) * y + ... + 1 * ?)
+
+class Solution {
+public:
+    int depthSumInverse(vector<NestedInteger>& nestedList) {
+        int sum = 0, int_sum = 0;
+        int max_depth = 0;
+        dfs(nestedList, max_depth, sum, int_sum, 1);
+        return (max_depth + 1) * int_sum - sum;
+    }
+    
+    void dfs(vector<NestedInteger>& nestedList, int& max_depth, int& sum, int& int_sum, int depth){
+        for(NestedInteger ni : nestedList){
+            if(!ni.isInteger()) dfs(ni.getList(), max_depth, sum, int_sum, depth + 1);
+            else{
+                int_sum += ni.getInteger();
+                sum += depth * ni.getInteger();
+                max_depth = max(max_depth, depth);
+            }
+        }
+    }
+    
+};
