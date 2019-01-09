@@ -38,5 +38,53 @@ public:
     }
 };
 
+Optimized: without using extra space to store the coordinate of a chosen point.
 
+class Solution {
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> res;
+        vector<int> col_idxes;
+        dfs(n, res, col_idxes);
+        return res;
+    }
+    
+    void dfs(int n, vector<vector<string>>& res, vector<int>& col_idxes){
+        if(col_idxes.size() == n){
+            res.push_back(drawBoard(col_idxes));
+            return;
+        }
+        
+        int row_idx = col_idxes.size();
+        for(int col_idx = 0; col_idx < n; col_idx++){
+            if(isValid(col_idxes, col_idx)){
+                col_idxes.push_back(col_idx);
+                dfs(n, res, col_idxes);
+                col_idxes.pop_back();
+            }
+        }
+    }
+    
+    bool isValid(vector<int>& col_idxes, int col_idx){
+        int row_idx = col_idxes.size();
+        for(int r = 0; r < col_idxes.size(); r++){
+            int c = col_idxes[r];
+            if(c == col_idx || r + c == row_idx + col_idx || r - c == row_idx - col_idx)
+                return false;
+        }
+        return true;
+    }
+    
+    vector<string> drawBoard(vector<int>& col_idxes){
+        vector<string> board;
+        for(int r = 0; r < col_idxes.size(); r++){
+            string column = "";
+            for(int c = 0; c < col_idxes.size(); c++){
+                column.push_back(col_idxes[r] == c ? 'Q' : '.');
+            }
+            board.push_back(column);
+        }
+        return board;
+    }
+};
 
