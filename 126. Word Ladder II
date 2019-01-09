@@ -1,0 +1,48 @@
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        vector<vector<string>> res;
+        queue<vector<string>> q;
+        q.push({beginWord});
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        unordered_set<string> visited;
+        if(dict.find(endWord) == dict.end()) return res;
+            
+        int level = 1;
+        int min_level = INT_MAX;
+        
+        while(!q.empty()){
+            vector<string> path = q.front();
+            q.pop();
+            if(path.size() > level){
+                for(string str : visited) dict.erase(str);
+                visited.clear();
+                if(path.size() > min_level) break;
+                else level = path.size();
+            }
+            string cur = path.back();
+            for(int i = 0; i < cur.size(); i++){
+                char temp = cur[i];
+                for(char c = 'a'; c <= 'z'; c++){
+                    cur[i] = c;
+                    if(dict.find(cur) != dict.end()){
+                        path.push_back(cur);
+                        visited.insert(cur);
+                        if(cur == endWord){
+                            min_level = level;
+                            res.push_back(path);
+                        }
+                        else{
+                            q.push(path);
+                        }
+                        path.pop_back();
+                    }
+                }
+                cur[i] = temp;
+            }
+        }        
+        return res;
+    }
+    
+    
+};
