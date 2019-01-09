@@ -35,3 +35,43 @@ public:
         return true;
     }
 };
+
+2. Optimized DFS storing hills and dales
+
+class Solution {
+public:
+    int totalNQueens(int n) {
+        int count = 0;
+        vector<int> rows(n);
+        vector<int> hills(4 * n - 1);
+        vector<int> dales(2 * n - 1); 
+        dfs(n, count, 0, rows, hills, dales);
+        return count;
+    }
+    
+    void dfs(int n, int& count, int row_idx, vector<int>& rows, vector<int>& hills, vector<int>& dales){
+        if(row_idx == n){
+            count++;
+            return;
+        }
+        
+        for(int col_idx = 0; col_idx < n; col_idx++){
+            if(isValid(n, rows, hills, dales, row_idx, col_idx)){
+                rows[col_idx] = 1;
+                hills[row_idx - col_idx + 2 * n] = 1;
+                dales[row_idx + col_idx] = 1;
+                
+                dfs(n, count, row_idx + 1, rows, hills, dales);
+                
+                rows[col_idx] = 0;
+                hills[row_idx - col_idx + 2 * n] = 0;
+                dales[row_idx + col_idx] = 0;
+            }
+        }
+    }
+    
+    bool isValid(int n, vector<int>& rows, vector<int>& hills, vector<int>& dales, int row_idx, int col_idx){
+        if(rows[col_idx] == 1 || hills[row_idx - col_idx + 2 * n] == 1 || dales[row_idx + col_idx] == 1) return false;
+        else return true;
+    }
+};
