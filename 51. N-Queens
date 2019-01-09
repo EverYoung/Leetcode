@@ -1,0 +1,88 @@
+1. DFS
+
+class Solution {
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> res;
+        string col(n, '.');
+        vector<string> sol(n, col);
+        vector<pair<int, int>> chosen;
+        dfs(res, sol, chosen, 0);
+        return res;
+    }
+    
+    void dfs(vector<vector<string>>& res, vector<string>& sol, vector<pair<int, int>>& chosen, int row){
+        if(row == sol.size()){
+            res.push_back(sol);
+            return;
+        }
+        
+        int range = sol.size();
+        for(int i = 0; i < range; i++){
+            if(isValid(chosen, i, row)){
+                sol[i][row] = 'Q';
+                chosen.push_back(make_pair(i, row));
+                dfs(res, sol, chosen, row + 1);
+                sol[i][row] = '.';
+                chosen.pop_back();
+            }
+        }
+    }
+    
+    bool isValid(vector<pair<int, int>>& chosen, int x, int y){
+        for(auto p : chosen){
+            int p_x = p.first, p_y = p.second;
+            if(x == p_x || y == p_y || x + y == p_x + p_y || x - y == p_x - p_y) return false;
+        }
+        return true;
+    }
+};
+
+
+class Solution {
+public:
+    int totalNQueens(int n) {
+        int count = 0;
+        vector<int> col_idxes;
+        dfs(count, col_idxes, 0);
+        return count;
+    }
+    
+    void dfs(int n, int& count, vector<int> col_idxes){
+        if(row_idx == n){
+            count++;
+            return;
+        }
+        
+        int row_idx = col_idxes.size() + 1;
+        for(int col_idx = 0; col_idx < n; col_idx++){
+            if(isValid(col_idxes, col_idx)){
+                col_idxes.push_back(col_idx);
+                dfs(n, count, col_idxes);
+                col_idxes.pop_back();
+            }
+        }
+    }
+    
+    bool isValid(vector<int> col_idxes, int col_idx){
+        int row_idx = col_idxes + 1;
+        for(int r = 0; r < col_idxes.size(); r++){
+            int c = col_idxes[r];
+            if(c == col_idx || r + c == row_idx + col_idx || r - c == row_idx - col_idx)
+                return false;
+        }
+        return true;
+    }
+    
+    vector<string> drawBoard(vector<int> col_idxes){
+        vector<string> board;
+        for(int r = 0; r < col_idxes.size(); r++){
+            string column = "";
+            for(int c = 0; c < col_idxes.size(); c++){
+                column.push_back(col_idxes[r] == c ? 'Q' : '.');
+            }
+            board.push_back(column);
+        }
+        return board;
+    }
+};
