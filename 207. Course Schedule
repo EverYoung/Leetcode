@@ -1,0 +1,69 @@
+1. BFS
+First construct the graph representation based on the prerequisites and also count the indegree of each nodes. Starting from all the nodes 
+with 0 indegree (don't have prerequisites), do BFS and for each node (course) we come to, we decrease the indegree of that node. And if that
+node's indegree becomes 0, which means that all its prerequisites are satisfied, we push them into the queue. At the same time, we have a 
+counter increasing each time we get the front node of the queue. By this, if a topological order exists, all nodes will have their indegrees
+equal to 0 at some time, and the counter finally will equals to number of nodes(courses).
+
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+        vector<vector<int>> graph(numCourses, vector<int>());
+        vector<int> indegree(numCourses, 0);
+        for(auto edge : prerequisites){
+            int src = edge.second, dst = edge.first;
+            graph[src].push_back(dst);
+            indegree[dst]++;
+        }
+        queue<int> q;
+        for(int i = 0; i < numCourses; i++){
+            if(indegree[i] == 0) q.push(i);
+        }
+        int count = 0;
+        while(!q.empty()){
+            int cur = q.front();
+            q.pop();
+            count++;
+            for(int next : graph[cur]){
+                indegree[next]--;
+                if(indegree[next] == 0) q.push(next);
+            }
+        }
+        return count == numCourses;
+    }
+};
+
+2. DFS
+Find if exists a circle.
+
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+        // if(prerequisites.empty()) return true;
+        vector<vector<int>> graph(numCourses, vector<int>());
+        for(auto edge : prerequisites){
+            int src = edge.second, dst = edge.first;
+            graph[src].push_back(dst);
+        }
+        unordered_set<int> visited;
+        vector<int> checked(numCourses, 0);
+        for(int i = 0; i < numCourses; i++){
+            if(!checked[i]){
+                if(findCircle(graph, i, visited, checked))
+                    return false;
+            }    
+        }   
+        return true;
+    }
+    
+    bool findCircle(vector<vector<int>>& graph, int idx, unordered_set<int>& visited, vector<int>& checked){
+        checked[idx] = 1;
+        visited.insert(idx);
+        for(int neighbor : graph[idx]){
+            if(visited.find(neighbor) != visited.end() || findCircle(graph, neighbor, visited, checked))
+                return true;  
+        }
+        visited.erase(idx);
+        return false;
+    }
+};
