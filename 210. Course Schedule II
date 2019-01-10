@@ -1,0 +1,98 @@
+1. BFS
+
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+        vector<vector<int>> graph(numCourses, vector<int>());
+        vector<int> indegree(numCourses, 0);
+        constructGraph(numCourses, prerequisites, graph, indegree);
+        
+        queue<int> q;
+        vector<int> order;
+        for(int i = 0; i < numCourses; i++){
+            if(indegree[i] == 0) q.push(i);
+        }
+        
+        while(!q.empty()){
+            int cur = q.front();
+            q.pop();
+            order.push_back(cur);
+            for(auto course : graph[cur]){
+                indegree[course]--;
+                if(indegree[course] == 0) 
+                    q.push(course);
+            }
+        }
+        if(order.size() != numCourses) order.clear();
+        return order;
+    }
+    
+    void constructGraph(int numCourses, 
+                       vector<pair<int, int>>& prerequisites,
+                       vector<vector<int>>& graph,
+                       vector<int>& indegree){
+        for(auto p : prerequisites){
+            int src = p.second, dst = p.first;
+            graph[src].push_back(dst);
+            indegree[dst]++;
+        }
+    }
+};
+
+2. DFS
+Use DFS to traverse nodes and use a stack to store them and when we pop nodes in the stack into a vector, it will be in top-down order.
+Also we need to know if there exist a circle in the current path dfs is traversing, so use a global bool variable to do that.
+
+class Solution {
+private:
+    bool exist_circle = false;
+    const int G = 0; // Green, means haven't been visited
+    const int Y = 1; // Yellow, means is on the current dfs path
+    const int R = 2; // Red, means have been traversed by dfs as start point
+    
+public:
+    vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+        vector<vector<int>> graph(numCourses, vector<int>());
+        vector<int> visited(numCourses, G);
+        constructGraph(numCourses, prerequisites, graph);
+        
+        stack<int> order;
+        for(int i = 0; i < numCourses; i++){
+            if(visited[i] == G) dfs(numCourses, i, graph, visited, order);
+        }
+        
+        vector<int> res;
+        if(exist_circle) return res;
+        while(!order.empty()){
+            res.push_back(order.top());
+            order.pop();
+        }
+        
+        return res;
+    }
+    
+    void constructGraph(int numCourses, 
+                       vector<pair<int, int>>& prerequisites,
+                       vector<vector<int>>& graph){
+        for(auto p : prerequisites){
+            int src = p.second, dst = p.first;
+            graph[src].push_back(dst);
+        }
+    }
+    
+    void dfs(int numCourses, int cur_course,
+             vector<vector<int>>& graph, 
+             vector<int>& visited, 
+             stack<int>& order){
+        if(exist_circle) return;
+
+        visited[cur_course] = 1;
+        bool existCircle = false;
+        for(int next : graph[cur_course]){
+            if(visited[next] == Y) exist_circle = true;
+            else if(visited[next] == G) dfs(numCourses, next, graph, visited, order);               
+        }
+        order.push(cur_course);
+        visited[cur_course] = R;
+    }
+};
