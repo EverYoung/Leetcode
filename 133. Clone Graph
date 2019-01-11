@@ -1,0 +1,50 @@
+1. DFS
+
+class Solution {
+public:
+    UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+        unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> clone_map;
+        UndirectedGraphNode* res = dfsClone(node, clone_map);
+        return res;
+    }
+    
+    UndirectedGraphNode* dfsClone(UndirectedGraphNode *node, 
+                                 unordered_map<UndirectedGraphNode*, UndirectedGraphNode*>& clone_map){
+        if(!node) return NULL;
+        UndirectedGraphNode *clone = new UndirectedGraphNode(node->label);
+        clone_map.insert(make_pair(node, clone));
+        for(UndirectedGraphNode* neighbor : node->neighbors){
+            if(clone_map.find(neighbor) == clone_map.end())
+                clone->neighbors.push_back(dfsClone(neighbor, clone_map));
+            else clone->neighbors.push_back(clone_map[neighbor]);
+        }
+        return clone;
+    }
+};
+
+2. BFS
+
+class Solution {
+public:
+    UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+        if(!node) return NULL;
+        unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> clone_map;
+        UndirectedGraphNode* clone = new UndirectedGraphNode(node->label);
+        clone_map.insert(make_pair(node, clone));
+        queue<UndirectedGraphNode*> q;
+        q.push(node);
+        while(!q.empty()){
+            UndirectedGraphNode* cur = q.front();
+            q.pop();
+            for(UndirectedGraphNode* neighbor : cur->neighbors){
+                if(clone_map.find(neighbor) == clone_map.end()){
+                    UndirectedGraphNode* neighbor_clone = new UndirectedGraphNode(neighbor->label);
+                    clone_map.insert(make_pair(neighbor, neighbor_clone));
+                    q.push(neighbor);
+                }
+                clone_map[cur]->neighbors.push_back(clone_map[neighbor]);
+            }
+        }
+        return clone;
+    }
+};
