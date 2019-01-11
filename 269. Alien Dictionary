@@ -1,0 +1,132 @@
+1. BFS using indegrees
+Same as course prerequisites, the difference is how to construct a graph-like structure based on the given words. 
+Turns out that we only need to compare the letter between adjacent words. We find the first different letter in two adjacent words and build
+up their dependency while accumulatedly compute each letter's indegree.
+Then, we simply use a BFS traversing the graph we construct and can obtain the topological order.
+
+class Solution {
+public:
+    string alienOrder(vector<string>& words) {
+        unordered_map<char, vector<char>> adj_list;
+        unordered_map<char, int> indegrees;
+        constructList(words, adj_list, indegrees);
+        string order = "";
+        
+        queue<char> q;
+        for(auto pair : indegrees){
+            if(pair.second == 0) q.push(pair.first);
+        }
+        
+        while(!q.empty()){
+            char cur = q.front();
+            q.pop();
+            order += cur;
+            for(char adj : adj_list[cur]){
+                indegrees[adj]--;
+                if(indegrees[adj] == 0) q.push(adj);
+            }
+        }
+        if(order.size() < indegrees.size()) order = "";
+        return order;
+    }
+    
+    void constructList(vector<string>& words, 
+                       unordered_map<char, vector<char>>& adj_list,
+                       unordered_map<char, int>& indegrees){
+        
+        for(int i = 0; i < words.size(); i++){
+            string cur_word = words[i];
+            if(i == 0){
+                for(char c : cur_word){
+                    if(adj_list.find(c) == adj_list.end()){
+                        adj_list.insert(make_pair(c, vector<char>()));
+                        indegrees.insert(make_pair(c, 0));
+                    }
+                }
+                    
+            }
+            else{
+                string prev_word = words[i - 1];
+                for(int j = 0; j < cur_word.size(); j++){
+                    for(char c : cur_word){
+                        if(adj_list.find(c) == adj_list.end()){
+                            adj_list.insert(make_pair(c, vector<char>()));
+                            indegrees.insert(make_pair(c, 0));
+                        }
+                    }
+                    if(j < prev_word.size()){
+                        if(cur_word[j] == prev_word[j]) continue;
+                        else{
+                            adj_list[prev_word[j]].push_back(cur_word[j]);
+                            indegrees[cur_word[j]]++;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
+
+2. DFS
+class Solution {
+private:
+    int G = 0;   // Green -> never been visited
+    int Y = 1;   // Yellow -> part of the path currently visiting
+    int R = 2;   // Red -> already traversed the path starting at this node
+        
+public:
+    string alienOrder(vector<string>& words) {
+        unordered_map<char, vector<char>> adj_list;
+        vector<int> visited(26, G);
+        constructList(words, adj_list);
+        string order = "";
+
+        for(auto pair : adj_list){
+            if(visited[pair.first - 'a'] == G && !dfs(adj_list, visited, order, pair.first))
+                return "";
+        }
+        return order;
+    }
+    
+    bool dfs(unordered_map<char, vector<char>>& adj_list, vector<int>& visited, string& order, char cur){
+        visited[cur - 'a'] = Y;
+        for(auto c : adj_list[cur]){
+            if(visited[c - 'a'] == Y) return false;
+            if(visited[c - 'a'] == G && !dfs(adj_list, visited, order, c)) return false;
+        }
+        visited[cur - 'a'] = R;
+        order = cur + order;
+        cout << order << endl;
+        return true;
+    }
+    
+    void constructList(vector<string>& words, unordered_map<char, vector<char>>& adj_list){
+        for(int i = 0; i < words.size(); i++){
+            string cur_word = words[i];
+            if(i == 0){
+                for(char c : cur_word){
+                    if(adj_list.find(c) == adj_list.end())
+                        adj_list.insert(make_pair(c, vector<char>()));
+                }
+                    
+            }
+            else{
+                string prev_word = words[i - 1];
+                for(int j = 0; j < cur_word.size(); j++){
+                    for(char c : cur_word){
+                        if(adj_list.find(c) == adj_list.end())
+                            adj_list.insert(make_pair(c, vector<char>()));
+                    }
+                    if(j < prev_word.size()){
+                        if(cur_word[j] == prev_word[j]) continue;
+                        else{
+                            adj_list[prev_word[j]].push_back(cur_word[j]);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
