@@ -28,3 +28,35 @@ public:
         return prev;
     }
 };
+
+class Solution {
+public:
+    ListNode* reverseBetween(ListNode* head, int m, int n) {
+        ListNode *prev = NULL, *cur = head;
+        int count = 1;
+        while(count < m){
+            prev = cur;
+            cur = cur->next;
+            count++;
+        }
+        
+        ListNode *temp = NULL, *front = prev, *tail = cur;
+        while(count <= n){
+            temp = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = temp;
+            count++;
+        }
+        
+        tail->next = cur;
+        if(front == NULL){
+            head = prev;
+        }
+        else{
+            front->next = prev;
+        }
+        
+        return head;
+    }
+};
