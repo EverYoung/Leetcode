@@ -1,0 +1,39 @@
+1. Fast and Slow Pointers
+
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if(head == NULL) return NULL;
+        ListNode *fast = head, *slow = head;
+        while(fast != NULL && fast->next != NULL){
+            fast = fast->next->next;
+            slow = slow->next;
+            if(fast == slow) break;
+        }
+        if(fast == NULL || fast->next == NULL) return NULL;
+        
+        slow = head;
+        while(slow != fast){
+            slow = slow->next;
+            fast = fast->next;
+        }
+        return slow;
+    }
+};
+
+2. Use Set
+
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        unordered_set<ListNode*> visited;
+        while(head != NULL){
+            if(visited.find(head) != visited.end()) return head;
+            else{
+                visited.insert(head);
+                head = head->next;
+            }
+        }
+        return NULL;
+    }
+};
