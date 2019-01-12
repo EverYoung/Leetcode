@@ -1,0 +1,34 @@
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(head == NULL || head->next == NULL) return head;
+        ListNode *cur = head->next, *piv = head;
+        piv->next = NULL;
+        while(cur != NULL){
+            if(cur->val != piv->val){
+                ListNode* temp = cur->next;
+                piv->next = cur;
+                piv = cur;
+                piv->next = NULL;
+                cur = temp;
+            }
+            else cur = cur->next;
+        }
+        return head;
+    }
+};
+
+Optimized:
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(head == NULL || head->next == NULL) return head;
+        ListNode *cur = head, *nxt = head;
+        while(nxt != NULL){
+            while(nxt != NULL && nxt->val == cur->val) nxt = nxt->next;
+            cur->next = nxt;
+            cur = nxt;
+        }
+        return head;
+    }
+};
