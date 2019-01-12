@@ -1,0 +1,27 @@
+The idea is to find the last group of continuous nodes with value 9. Keep two pointer, prev pointer finally will stop before the last
+group of nodes that has value 9. Then we can just add 1 to prev pointer's node and make all the nodes behind 0;
+
+class Solution {
+public:
+    ListNode* plusOne(ListNode* head) {
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode *cur = head, *prev = dummy;
+        while(cur != NULL){
+            if(cur->val != 9) prev = cur;
+            cur = cur->next;
+        }
+        prev->val += 1;
+        while(prev->next != NULL) {
+            prev = prev->next;
+            prev->val = 0;
+        }
+        
+        if(dummy->val == 1) head = dummy;
+        else{
+            head = dummy->next;
+            free(dummy);
+        }
+        return head;
+    }
+};
