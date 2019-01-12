@@ -1,0 +1,67 @@
+1. Use Hashmap
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        unordered_map<int, ListNode*> hashmap;
+        ListNode* cur = head;
+        int count = 1;
+        while(cur != NULL){
+            hashmap[count] = cur;
+            cur = cur->next;
+            count++;
+        }
+        if(count - n == 1) head = hashmap[count - n + 1];
+        else{
+            ListNode* prev = hashmap[count - n - 1];
+            prev->next = prev->next->next;
+        }
+        return head;
+    }
+};
+
+2. One-pass
+First let cur pointer move forward for n steps, and then we let prev pointer point to head. After that we keep moving two pointers one
+step at a time until cur pointer reaches the last node. At this time, the prev pointer is pointing to the node before which we want to
+delete. Then we can easily delete the picked node.
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode *prev = NULL, *cur = head;
+        while(n-- > 0) cur = cur->next;
+        
+        if(cur == NULL) return head->next;
+        prev = head;
+        
+        while(cur->next != NULL){
+            prev = prev->next;
+            cur = cur->next;
+        }
+        
+        prev->next = prev->next->next;
+        
+        return head;
+    }
+};
+
+3. One-pass with Dommy Node
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode *dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode *prev = dummy, *cur = head;
+        while(n-- > 1) cur = cur->next;
+        
+        while(cur->next != NULL){
+            prev = prev->next;
+            cur = cur->next;
+        }
+        
+        prev->next = prev->next->next;
+        
+        return dummy->next;
+    }
+};
