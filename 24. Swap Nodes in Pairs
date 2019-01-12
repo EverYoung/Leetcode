@@ -29,3 +29,24 @@ public:
         return dummy->next;
     }
 };
+
+Optimized:
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(head == NULL || head->next == NULL) return head;
+        ListNode* dummy = new ListNode(0);
+        ListNode *prev = dummy, *front = head, *back = head->next;
+        while(front != NULL && back != NULL){
+            ListNode* temp = back->next;
+            prev->next = back;
+            back->next = front;
+            front->next = temp;
+            prev = front;
+            front = temp;
+            if(front == NULL) back = NULL;
+            else back = front->next;
+        }
+        return dummy->next;
+    }
+};
