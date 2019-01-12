@@ -1,0 +1,48 @@
+1. Use Set
+
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        unordered_set<ListNode*> visited;
+        while(head){
+            if(visited.find(head) != visited.end()) return true;
+            else{
+                visited.insert(head);
+                head = head->next;
+            }
+        }
+        return false;
+    }
+};
+
+2. Fast and Slow pointers
+When push fast pointer forward, fast pointer need to go forward two steps. We need to first go 1 step, and then check if fast now is NULL.
+If so, fast pointer stops there; otherwise, we go another 1 step forward. This prevents fast pointer visit undefined memory.
+
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if(!head || !head->next) return false;
+        ListNode *fast = head->next, *slow = head;
+        while(fast != slow && fast){
+            fast = fast->next;
+            if(fast) fast = fast->next;
+            slow = slow->next;
+        }
+        return fast == slow;
+    }
+};
+
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if(!head || !head->next) return false;
+        ListNode *fast = head->next, *slow = head;
+        while(fast != slow){
+            if(fast == NULL || fast->next == NULL) return false;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return true;
+    }
+};
