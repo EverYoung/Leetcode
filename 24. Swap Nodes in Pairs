@@ -1,0 +1,31 @@
+(1) Create a dummy node in front of the whole linkedlist. We can keep our modification operation the same at each part of the linkedlist, 
+while at the end we can just return dummy->next.
+(2) Keep 4 pointers, prev, front, end and temp. Each swap of nodes affect 3 nodes, the previous node of the pair, and the two nodes of the 
+pair. Prev points to the node before the pair, and front points to the first node in the pair, back points to the second node in the pair.
+Temp before swap, point it to back->next, so that after we making back->next point to front, we can still move forward.
+(3) In the end, there can be two cases. First case: we have only 1 node left, front points to the last node. Second case: we have no case 
+left, front points to NULL. However, whatever case we are in, we need to let prev->next point to front. Because after every swap, front->next
+still point to back, and we only modify front->next at the swap of next pair. So, in the end, we need an extra operation because we have no
+more pairs to swap and thus have to manually modify prev->next.
+
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(head == NULL || head->next == NULL) return head;
+        ListNode* dummy = new ListNode(0);
+        ListNode *prev = dummy, *front = head, *back = head->next;
+        while(front != NULL && back != NULL){
+            ListNode* temp = back->next;
+            prev->next = back;
+            back->next = front;
+            prev = front;
+            front = temp;
+            if(front == NULL) back = NULL;
+            else back = front->next;
+        }
+        
+        prev->next = front;
+        
+        return dummy->next;
+    }
+};
