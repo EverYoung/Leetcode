@@ -1,0 +1,33 @@
+1. Use Set
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        unordered_set<ListNode*> visited;
+        while(headA != NULL){
+            visited.insert(headA);
+            headA = headA->next;
+        }
+        while(headB != NULL){
+            if(visited.find(headB) != visited.end()) return headB;
+            headB = headB->next;
+        }
+        return NULL;
+    }
+};
+
+2. Use Two Pointers
+The key idea is that when each pointer reach the end of their linkedlist, we set them to the head of the other linkedlist. By doing this, 
+there is a time when two pointers have the same distance from the beginning of intersection. 
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *iterA = headA, *iterB = headB;
+        while(iterA != iterB){
+            iterA = iterA ? iterA->next : headB;
+            iterB = iterB ? iterB->next : headA;
+        }
+        return iterA;
+    }
+};
