@@ -1,0 +1,67 @@
+1. Naive
+
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        ListNode* dummy = new ListNode(0);
+        ListNode* res = dummy;
+        int count_list_end = 0;
+        while(count_list_end != lists.size()){
+            count_list_end = 0;
+            int min_val = INT_MAX, min_idx = -1;
+            for(int i = 0; i < lists.size(); i++){
+                if(lists[i] == NULL){
+                    count_list_end++;
+                    continue;
+                }
+                if(lists[i]->val < min_val){
+                    min_idx = i;
+                    min_val = lists[i]->val;
+                }
+            }
+            if(count_list_end == lists.size()) break;
+            res->next = lists[min_idx];
+            res = res->next;
+            lists[min_idx] = lists[min_idx]->next;
+        }
+        return dummy->next;
+    }
+    
+    bool isEnd(vector<ListNode*>& lists){
+        for(int i = 0; i < lists.size(); i++){
+            if(lists[i] != NULL) return false;
+        }
+        return true;
+    }
+};
+
+2. Optimized using Priority Queue
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        ListNode* dummy = new ListNode(0);
+        ListNode* res = dummy;
+        
+        priority_queue<ListNode*, vector<ListNode*>, compare> pq;
+        
+        for(ListNode* node : lists){
+            if(node) pq.push(node);
+        }
+        
+        while(!pq.empty()){
+            ListNode* min_node = pq.top();
+            pq.pop();
+            res->next = min_node;
+            res = res->next;
+            if(min_node->next) pq.push(min_node->next);
+        }
+        
+        return dummy->next;
+    }
+    
+    struct compare{
+        bool operator()(const ListNode* l1, const ListNode* l2){
+            return l1->val > l2->val;
+        }
+    };
+};
