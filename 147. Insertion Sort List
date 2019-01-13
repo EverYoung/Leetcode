@@ -1,0 +1,39 @@
+1. Naive
+
+class Solution {
+public:
+    ListNode* insertionSortList(ListNode* head) {
+        ListNode *dummy = new ListNode(0);
+        ListNode *res = dummy;
+        while(head != NULL){
+            ListNode* temp = head->next;
+            res = dummy;
+            while(res->next != NULL && res->next->val <= head->val) res = res->next;
+            head->next = res->next;
+            res->next = head;
+            head = temp;
+        }
+        return dummy->next;
+    }
+};
+
+2. Optimized
+Only reset res pointer to dummy node when the head pointer currently pointing to a node with value less or equal to the value of node res
+pointer pointing to.
+
+class Solution {
+public:
+    ListNode* insertionSortList(ListNode* head) {
+        ListNode *dummy = new ListNode(0);
+        ListNode *res = dummy;
+        while(head != NULL){
+            ListNode* temp = head->next;
+            if(head->val <= res->val) res = dummy;
+            while(res->next != NULL && res->next->val <= head->val) res = res->next;
+            head->next = res->next;
+            res->next = head;
+            head = temp;
+        }
+        return dummy->next;
+    }
+};
