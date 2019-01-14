@@ -1,0 +1,23 @@
+1. Use HashMap
+Traverse all element, and put them and their indexes into hashmap. Everytime we come to a new element, if target-element is a key in the
+hashmap, then we already encounter an element before whose sum with current element equals target.
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<int> res;
+        unordered_map<int, int> hashmap;
+        for(int i = 0; i < nums.size(); i++){
+            if(hashmap.find(target - nums[i]) != hashmap.end()){
+                res.push_back(i);
+                res.push_back(hashmap[target - nums[i]]);
+                return res;
+            }
+            else hashmap.insert(make_pair(nums[i], i));
+        }
+        return res;
+    }
+};
+
+2. Two Pointers
+For this problem, two pointers method is not a good one, since we need to return indexes while sorting mess indexes up.
