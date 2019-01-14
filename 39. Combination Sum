@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        std::sort(candidates.begin(), candidates.end());
+        vector<vector<int>> res;
+        vector<int> cur;
+        findCombination(res, candidates, cur, target, 0);
+        return res;
+    }
+    
+    void findCombination(vector<vector<int>>& res, vector<int>& candidates, vector<int>& cur, int target, int startIdx){
+        if(target == 0){
+            res.push_back(cur);
+            return;
+        }
+        
+        if(startIdx > candidates.size() || target < 0) return;
+        
+        for(int i = startIdx; i < candidates.size(); i++){
+            cur.push_back(candidates[i]);
+            findCombination(res, candidates, cur, target - candidates[i], i);
+            cur.pop_back();
+        }
+    }
+};
