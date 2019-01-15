@@ -27,7 +27,9 @@ public:
     }
 };
 
-2. Two Pointers
+2. Twice Two Partitions
+
+3. One-pass Three Partition
 Left pointer indicates that every elements on its left is 0. Right pointer indicates that every elements on its right is 2. We iterate
 throught the array, if we encounter a 0, we swap it to where left pointer is pointing, and if we encounter a 2, we swap it to where right
 pointer is pointing. After swap, left increase or right decrease. And we only go to next position to when we swap with left or we encounter
