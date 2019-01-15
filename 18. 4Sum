@@ -1,0 +1,79 @@
+1. Two Pointers
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> results;
+        if(nums.size() < 4) return results;
+        
+        std::sort(nums.begin(), nums.end());
+        
+        for(int i = 0; i < nums.size() - 3; i++){
+            if(i > 0 && nums[i] == nums[i - 1]) continue;
+            
+            for(int k = i + 1; k < nums.size() - 2; k++){
+                if(k > i + 1 && nums[k] == nums[k - 1]) continue;
+                
+                int left = k + 1, right = nums.size() - 1;
+                while(left < right){
+                    int sum = nums[i] + nums[k] + nums[left] + nums[right];
+                    if(sum == target){
+                        vector<int> current(4, 0);
+                        current[0] = nums[i];
+                        current[1] = nums[k];
+                        current[2] = nums[left];
+                        current[3] = nums[right];
+                        results.push_back(current);
+                        while(left < right && nums[left] == current[2]) left++;
+                        while(left < right && nums[right] == current[3]) right--;
+                    }
+                    else if(sum < target) left++;
+                    else right--;
+                }
+            }
+        }
+        return results;
+    }
+};
+
+2. Optimized: prune some cases
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> results;
+        if(nums.size() < 4) return results;
+        
+        std::sort(nums.begin(), nums.end());
+        
+        for(int i = 0; i < nums.size() - 3; i++){
+            if(i > 0 && nums[i] == nums[i - 1]) continue;
+            if(nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target) break;
+            if(nums[i] + nums[nums.size() - 1] + nums[nums.size() - 2] + nums[nums.size() - 3] < target) continue;
+            
+            for(int k = i + 1; k < nums.size() - 2; k++){
+                if(k > i + 1 && nums[k] == nums[k - 1]) continue;
+                if(nums[i] + nums[k] + nums[k + 1] + nums[k + 2] > target) break;
+                if(nums[i] + nums[k] + nums[nums.size() - 1] + nums[nums.size() - 2] < target) continue;
+                
+                int left = k + 1, right = nums.size() - 1;
+                while(left < right){
+                    int sum = nums[i] + nums[k] + nums[left] + nums[right];
+                    if(sum == target){
+                        vector<int> current(4, 0);
+                        current[0] = nums[i];
+                        current[1] = nums[k];
+                        current[2] = nums[left];
+                        current[3] = nums[right];
+                        results.push_back(current);
+                        while(left < right && nums[left] == current[2]) left++;
+                        while(left < right && nums[right] == current[3]) right--;
+                    }
+                    else if(sum < target) left++;
+                    else right--;
+                }
+            }
+        }
+        return results;
+    }
+};
