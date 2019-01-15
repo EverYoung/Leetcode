@@ -1,0 +1,23 @@
+Two Pointers:
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char, int> idxes;
+        int left = -1, right = 0;
+        int max_len = 0;
+        while(left < right && right < s.size()){
+            if(right == s.size() - 1 && right - left + 1 <= max_len) break;
+            if(idxes.find(s[right]) == idxes.end()){
+                idxes.insert(make_pair(s[right], right));
+            }
+            else{
+                left = max(left, idxes[s[right]]);
+                idxes[s[right]] = right;
+            }
+            max_len = max(max_len, right - left);
+            right++;
+        }
+        return max_len;
+    }
+};
