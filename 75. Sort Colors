@@ -27,25 +27,29 @@ public:
     }
 };
 
-2. Dutch Flag Partition: move values less than middle value to the front and move values larger than middle value to the back. Leave the 
-middle values as they are, eventually they will be swap to where they should be.
+2. Two Pointers
+Left pointer indicates that every elements on its left is 0. Right pointer indicates that every elements on its right is 2. We iterate
+throught the array, if we encounter a 0, we swap it to where left pointer is pointing, and if we encounter a 2, we swap it to where right
+pointer is pointing. After swap, left increase or right decrease. And we only go to next position to when we swap with left or we encounter
+a 1. This is because on the left of the current position, every elements should be 1 or 0, so even though we swap with left pointer, 
+the current position will have 1.
 
 class Solution {
 public:
     void sortColors(vector<int>& nums) {
-        int n = nums.size();
-        int ptr1 = 0, ptr2 = 0, ptr3 = n - 1;
-        while(ptr1 <= ptr3){
-            if(nums[ptr1] < 1){
-                swap(nums[ptr1], nums[ptr2]);
-                ++ptr1;
-                ++ptr2;
+        if(nums.size() == 0) return;
+        int ptr = 0, left = 0, right = nums.size() - 1;
+        while(ptr <= right){
+            if(nums[ptr] == 0){
+                std::swap(nums[ptr], nums[left]);
+                left++;
+                ptr++;
             }
-            else if(nums[ptr1] > 1){
-                swap(nums[ptr1], nums[ptr3]);
-                --ptr3;
+            else if(nums[ptr] == 2){
+                std::swap(nums[ptr], nums[right]);
+                right--;
             }
-            else ++ptr1;
+            else ptr++;
         }
     }
 };
