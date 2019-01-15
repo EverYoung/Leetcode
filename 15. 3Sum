@@ -1,0 +1,32 @@
+Two Pointers
+First sort the array. Then fix 1 number and use two pointers to scan the subarray behind the fixed nubmer.
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> results;
+        if(nums.size() < 3) return results;
+        
+        std::sort(nums.begin(), nums.end());
+
+        for(int i = 0; i < nums.size() - 2; i++){
+            if(i > 0 && nums[i] == nums[i - 1]) continue;
+            int left = i + 1, right = nums.size() - 1;
+            while(left < right){
+                int sum = nums[left] + nums[right] + nums[i];
+                if(sum == 0){
+                    vector<int> current(3, 0);
+                    current[0] = nums[i];
+                    current[1] = nums[left];
+                    current[2] = nums[right];
+                    results.push_back(current);
+                    while(left < right && nums[left] == current[1]) left++;
+                    while(left < right && nums[right] == current[2]) right--;
+                }
+                else if(sum < 0) left++;
+                else right--;
+            }
+        }
+        return results;
+    }
+};
