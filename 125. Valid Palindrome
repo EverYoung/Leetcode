@@ -1,0 +1,24 @@
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        if(s.empty()) return true;
+        int left = 0, right = s.size() - 1;
+        while(left < right){
+            while(left < right && !validChar(s[left])) left++;
+            while(left < right && !validChar(s[right])) right--;
+            char cl = s[left], cr = s[right];
+            if(cl >= 'A' && cl <= 'Z') cl = cl - 'A' + 'a';
+            if(cr >= 'A' && cr <= 'Z') cr = cr - 'A' + 'a';
+            if(cl != cr) return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+    
+    bool validChar(char c){
+        if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
+            return true;
+        else return false;
+    }
+};
