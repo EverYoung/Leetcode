@@ -1,0 +1,45 @@
+class MyStack {
+private:
+    queue<int> q;
+    int peek = 0;
+    
+public:
+    /** Initialize your data structure here. */
+    MyStack() {
+        
+    }
+    
+    /** Push element x onto stack. */
+    void push(int x) {
+        q.push(x);
+        peek = x;
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        queue<int> q_temp;
+        int res = 0;
+        while(!q.empty()){
+            res = q.front();
+            q.pop();
+            if(!q.empty()) q_temp.push(res);
+        }
+        while(!q_temp.empty()){
+            int temp = q_temp.front();
+            q_temp.pop();
+            if(q_temp.empty()) peek = temp;
+            q.push(temp);
+        }
+        return res;
+    }
+    
+    /** Get the top element. */
+    int top() {
+        return peek;
+    }
+    
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return q.empty();
+    }
+};
