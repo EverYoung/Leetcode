@@ -1,0 +1,57 @@
+Use Stack
+When comes to a minus sign, we take it as a negative sign of next number. And we only push numbers that finally will be added up into the
+stack, which means if we come to a * or /, we need to get the next number and the previous numer(top number in stack) and do the calculation
+and put the result back to the stack.
+
+class Solution {
+public:
+    int calculate(string s) {
+        int ptr = 0;
+        stack<int> st;
+        while(ptr < s.size()){
+            char c = s[ptr];
+            // ' ' / '+'
+            if(c == ' ' || c == '+') ptr++;
+            // '-'
+            else if(c == '-'){
+                int num = 0;
+                ptr++;
+                while(ptr < s.size() && s[ptr] == ' ') ptr++;
+                while(ptr < s.size() && s[ptr] >= '0' && s[ptr] <= '9'){
+                    num = num * 10 + s[ptr] - '0';
+                    ptr++;
+                }
+                st.push(-num);
+            }
+            // '*' / '/'
+            else if(c == '*' || c == '/'){
+                int prev_num = st.top();
+                st.pop();
+                int next_num = 0;
+                ptr++;
+                while(ptr < s.size() && s[ptr] == ' ') ptr++;
+                while(ptr < s.size() && s[ptr] >= '0' && s[ptr] <= '9'){
+                    next_num = next_num * 10 + s[ptr] - '0';
+                    ptr++;
+                }
+                if(c == '*') st.push(prev_num * next_num);
+                if(c == '/') st.push(prev_num / next_num);
+            }
+            // number
+            else if(c >= '0' && c <='9'){
+                int num = 0;
+                while(ptr < s.size() && s[ptr] >= '0' && s[ptr] <= '9'){
+                    num = num * 10 + s[ptr] - '0';
+                    ptr++;
+                }
+                st.push(num);
+            }
+        }
+        int res = 0;
+        while(!st.empty()){
+            res += st.top();
+            st.pop();
+        }
+        return res;
+    }
+};
