@@ -14,6 +14,29 @@ public:
     }
 };
 
+Optimiezed: Always keep k numbers largest numbers in priority queue instead of put all of them in at the first place. Save more space.
+
+class Solution {
+public:
+    struct mycomparator{
+        bool operator()(const int& left, const int& right) const{
+            return right < left;
+        }
+    };
+    
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int, vector<int>, mycomparator> pq;
+        for(int i : nums){
+            if(pq.size() < k) pq.push(i);
+            else if(pq.size() == k && i > pq.top()){
+                pq.pop();
+                pq.push(i);
+            }
+        }
+        return pq.top();
+    }
+};
+
 2. Use the partition part of QuickSort: Since we only need to find the k-th largest element, we don't really need some kind of order, we 
 can simply seperate the array into two half. We put all the number larger than pivot in the front half and other in the back half, we can 
 know the pivot's position in the array, and if it is the k-th, we return it.
