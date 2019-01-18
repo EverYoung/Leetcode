@@ -1,0 +1,35 @@
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        vector<vector<int>> checkCol(9, vector<int>(10, 0));
+        vector<vector<int>> checkBox(9, vector<int>(10, 0));
+        for(int i = 0; i < 9; i++){
+            vector<int> checkRow(10, 0);
+            for(int j = 0; j < 9; j++){
+                char c = board[i][j];
+                if(c == '.') continue;
+                if(c < '0' || c > '9') return false;
+                else {
+                    //cout << c <<endl;
+                    if(checkRow[c - '0'] == 1){
+                        //cout << "row false" <<endl;
+                        return false;
+                    }
+                    else checkRow[c - '0'] = 1;
+                    if(checkCol[j][c - '0'] == 1){
+                        //cout << "col false" <<endl;
+                        return false;
+                    }
+                    else checkCol[j][c - '0'] = 1;
+                    int boxIdx = (i / 3) * 3 + (j / 3);
+                    if(checkBox[boxIdx][c - '0'] == 1){
+                        //cout << "box false" <<endl;
+                        return false;
+                    }
+                    else checkBox[boxIdx][c - '0'] = 1;
+                }
+            }
+        }
+        return true;
+    }
+};
