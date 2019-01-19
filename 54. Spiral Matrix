@@ -1,0 +1,113 @@
+1. Straightforward Simulation
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> spiral;
+        if(matrix.size() == 0) return spiral;
+        int len_x = matrix.size(), len_y = matrix[0].size();
+        bool left = false, right = true, up = false, down = false;
+        unordered_set<int> visited;
+        int i = 0, j = 0;
+        while(spiral.size() < len_x * len_y){
+            if(down){
+                if(visited.find(matrix[i][j]) != visited.end()){
+                    down = false;
+                    left = true;
+                    i--;
+                    j--;
+                }
+                else{
+                    spiral.push_back(matrix[i][j]);
+                    visited.insert(matrix[i][j]);
+                    if(i < len_x - 1) i++;
+                    else{
+                        down = false;
+                        left = true;
+                        j--;
+                    }
+                }
+            }
+            if(up){
+                if(visited.find(matrix[i][j]) != visited.end()){
+                    up = false;
+                    right = true;
+                    i++;
+                    j++;
+                }
+                else{
+                    spiral.push_back(matrix[i][j]);
+                    visited.insert(matrix[i][j]);
+                    if(i > 0) i--;
+                    else{
+                        up = false;
+                        right = true;
+                        j++;
+                    }
+                }
+            }
+            if(left){
+                if(visited.find(matrix[i][j]) != visited.end()){
+                    left = false;
+                    up = true;
+                    j++;
+                    i--;
+                }
+                else{
+                    spiral.push_back(matrix[i][j]);
+                    visited.insert(matrix[i][j]);
+                    if(j > 0) j--;
+                    else{
+                        left = false;
+                        up = true;
+                        i--;
+                    }
+                }
+            }
+            if(right){
+                if(visited.find(matrix[i][j]) != visited.end()){
+                    right = false;
+                    down = true;
+                    j--;
+                    i++;
+                }
+                else{
+                    spiral.push_back(matrix[i][j]);
+                    visited.insert(matrix[i][j]);
+                    if(j < len_y - 1) j++;
+                    else{
+                        right = false;
+                        down = true;
+                        i++;
+                    }
+                }
+            }
+        }
+        return spiral;
+    }
+};
+
+2. Layer by Layer
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> spiral;
+        if(matrix.size() == 0) return spiral;
+        int r1 = 0, r2 = matrix.size() - 1;
+        int c1 = 0, c2 = matrix[0].size() - 1;
+        while(r1 <= r2 && c1 <= c2){
+            for(int i = c1; i <= c2; i++) spiral.push_back(matrix[r1][i]);
+            for(int j = r1 + 1; j <= r2; j++) spiral.push_back(matrix[j][c2]);
+            if(r1 < r2 && c1 < c2){
+                for(int i = c2 - 1; i >= c1; i--) spiral.push_back(matrix[r2][i]);
+                for(int j = r2 - 1; j > r1; j--) spiral.push_back(matrix[j][c1]);
+            }
+            r1++;
+            c1++;
+            r2--;
+            c2--;
+        }
+        return spiral;
+    }
+};
