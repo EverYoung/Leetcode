@@ -1,0 +1,23 @@
+DFS:
+At each node, we use a dfs to calculate how many coins the left child and right child need to get or give. These number also indicate the 
+number of moves we need to make children have exactly 1 coin. And the number of coins our current node need to get or give is equal to
+node value minus 1 (which is the coin need to be at this node) plus coins givn by left child and right child, which can be negative if 
+children need to get coins.
+
+class Solution {
+public:
+    int distributeCoins(TreeNode* root) {
+        if(root == NULL) return 0;
+        int moves = 0;
+        dfs(root, moves);
+        return moves;
+    }
+    
+    int dfs(TreeNode* root, int& moves){
+        if(root == NULL) return 0;
+        int left_moves = dfs(root->left, moves);
+        int right_moves = dfs(root->right, moves);
+        moves += abs(left_moves) + abs(right_moves);
+        return root->val + left_moves + right_moves - 1; 
+    }
+};
