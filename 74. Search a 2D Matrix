@@ -1,0 +1,22 @@
+1. Binary Search
+Since the first element must be greater than the last element in the previous row, we can regard the whole matrix as an array and use
+binary search to search for the target.
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if(matrix.size() == 0 || matrix[0].size() == 0) return false;
+        int cLen = matrix.size(), rLen = matrix[0].size();
+        int left = 0, right = rLen * cLen - 1;
+        while(left + 1 < right){
+            int mid = left + (right - left) / 2;
+            int rIdx = mid / rLen, cIdx = mid % rLen;
+            if(target == matrix[rIdx][cIdx]) return true;
+            else if(target > matrix[rIdx][cIdx]) left = mid;
+            else right = mid;
+        }
+        if(matrix[left / rLen][left % rLen] == target) return true;
+        if(matrix[right / rLen][right % rLen] == target) return true;
+        return false;
+    }
+};
