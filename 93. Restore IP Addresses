@@ -1,0 +1,58 @@
+class Solution {
+public:
+    vector<string> restoreIpAddresses(string s) {
+        vector<string> res;
+        if(s.size() < 4) return res;
+        string cur;
+        backtrack(s, res, cur, 0, 0, 3);
+        return res;
+    }
+    
+    void backtrack(string& s, vector<string>& res, string& cur, int cur_num, int idx, int remain){
+        if(idx == s.size() && remain != 0) return;
+        if(remain == 0){
+            string remain_str = s.substr(idx, s.size() - idx);
+            if(remain_str[0] == '0' && remain_str.size() > 1) return;
+            if(remain_str.size() == 0) return;
+            int remain_num = toInt(remain_str);
+            if(remain_num >= 0 && remain_num <= 255){
+                string temp = cur + remain_str;
+                res.push_back(temp);
+                
+            }
+            return;
+        }
+        
+        // Try include the number
+        if(s[idx] == '0' && cur_num == 0){
+            cur.push_back(s[idx]);
+            cur.push_back('.');
+            backtrack(s, res, cur, 0, idx + 1, remain - 1);
+            cur.pop_back();
+            cur.pop_back();
+        }
+        else{
+            cur_num = cur_num * 10 + s[idx] - '0';
+            if(cur_num <= 255){
+                cur.push_back(s[idx]);
+                backtrack(s, res, cur, cur_num, idx + 1, remain);
+                cur.pop_back();
+            }
+        }
+        
+        // Try not include the number
+        if(cur[cur.size() - 1] != '.' &&  cur.size() != 0){
+            cur.push_back('.');
+            backtrack(s, res, cur, 0, idx, remain - 1);
+            cur.pop_back();
+        }
+    }
+    
+    int toInt(string str){
+        int num = 0;
+        for(int i = 0; i < str.size(); i++){
+            num = num * 10 + str[i] - '0';
+        }
+        return num;
+    }
+};
