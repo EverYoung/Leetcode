@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<int> partitionLabels(string S) {
+        vector<int> res;
+        if(S.empty()) return res;
+        vector<vector<int>> char_start_end;
+        unordered_map<char, int> indexes;
+        for(int i = 0; i < S.size(); i++){
+            char c = S[i];
+            if(indexes.find(c) == indexes.end()){
+                indexes.insert(make_pair(c, char_start_end.size()));
+                char_start_end.push_back(vector<int>(2, i));
+            }
+            else char_start_end[indexes[c]][1] = i;
+        }
+        
+        int start = 0, end = 0;
+        for(auto interval : char_start_end){
+            if(end >= interval[0] && start <= interval[0]){
+                end = max(end, interval[1]);
+            }
+            else{
+                res.push_back(end - start + 1);
+                start = interval[0];
+                end = interval[1];
+            }
+        }
+        res.push_back(end - start + 1);
+        return res;
+    }
+};
