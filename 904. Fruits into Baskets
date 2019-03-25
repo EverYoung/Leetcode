@@ -1,0 +1,60 @@
+1. Sliding Window 
+similar to longest subarray with k distinct numbers, where k = 2 in this problem.
+
+class Solution {
+public:
+    int totalFruit(vector<int>& tree) {
+        if(tree.empty()) return 0;
+        int n = tree.size();
+        int res = 0;
+        unordered_map<int, int> types;
+        int left = 0, right = 0;
+        while(right < n){
+            int curType = tree[right];
+            types[curType]++;
+            while(types.size() > 2){
+                int removedType = tree[left];
+                types[removedType]--;
+                if(types[removedType] == 0) types.erase(removedType);
+                left++;
+            }
+            res = max(res, right - left + 1);
+            right++;
+        }
+        return res;
+    }
+};
+
+2. Two Pointers
+using the fact that each time the subarray contains 3 distinct numbers, we only need to consider the last appeared number in the current 
+valid subarray for the next possible subarray
+
+class Solution {
+public:
+    int totalFruit(vector<int>& tree) {
+        if(tree.empty()) return 0;
+        int n = tree.size();
+        int res = 0;
+        int basket1 = -1, basket2 = -1;
+        int left = 0, right = 0;
+        for(; right < n; right++){
+            if(basket1 == -1){
+                basket1 = tree[right];
+                continue;
+            }
+            if(basket1 == tree[right]) continue;
+            if(basket2 == -1){
+                basket2 = tree[right];
+                continue;
+            }
+            if(basket2 == tree[right]) continue;
+            res = max(res, right - left);
+            left = right - 1;
+            while(left > 0 && tree[left] == tree[left - 1]) left--;
+            basket1 = tree[left];
+            basket2 = tree[right];
+        }
+        res = max(res, right - left);
+        return res;
+    }
+};
