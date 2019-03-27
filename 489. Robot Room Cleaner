@@ -1,0 +1,67 @@
+1. Backtracking (DFS)
+At each position, robot have 4 possible directions to move forward, use DFS to try all those directions. At the meantime, use a set to 
+record those grids that have been cleaned to avoid repeatedly clean the same grid. When backtracking, we need to move the robot to the 
+previous position and also turn it to the original direction it faced to. This can be done by following:
+
+    robot.turnLeft();
+    robot.turnLeft();
+    robot.move();
+    robot.turnLeft();
+    robot.turnLeft();
+    
+And we represent directions in the following order:
+
+        0
+     3 -|- 1
+        2
+        
+        
+/**
+ * // This is the robot's control interface.
+ * // You should not implement it, or speculate about its implementation
+ * class Robot {
+ *   public:
+ *     // Returns true if the cell in front is open and robot moves into the cell.
+ *     // Returns false if the cell in front is blocked and robot stays in the current cell.
+ *     bool move();
+ *
+ *     // Robot will stay in the same cell after calling turnLeft/turnRight.
+ *     // Each turn will be 90 degrees.
+ *     void turnLeft();
+ *     void turnRight();
+ *
+ *     // Clean the current cell.
+ *     void clean();
+ * };
+ */
+class Solution {
+public:
+    void cleanRoom(Robot& robot) {
+        unordered_set<string> cleaned;
+        dfs(robot, cleaned, 0, 0, 0);
+    }
+    
+    void dfs(Robot& robot, unordered_set<string>& cleaned, int curDirection, int x, int y){
+        robot.clean();
+        cleaned.insert(to_string(x) + "," + to_string(y));
+        
+        for(int i = 0; i < 4; i++){
+            int direction = (curDirection + i) % 4;
+            int nextx = x + directions[direction][0];
+            int nexty = y + directions[direction][1];
+            string nextPos = to_string(nextx) + "," + to_string(nexty);
+            if(cleaned.find(nextPos) == cleaned.end() && robot.move()){
+                dfs(robot, cleaned, direction, nextx, nexty);
+                robot.turnLeft();
+                robot.turnLeft();
+                robot.move();
+                robot.turnRight();
+                robot.turnRight();
+            }
+            robot.turnRight();
+        }
+    }
+
+private:
+    vector<vector<int>> directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+};
