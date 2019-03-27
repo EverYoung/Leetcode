@@ -1,0 +1,91 @@
+1. Backtracking (Time Limit Exceed):
+
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int minLargest = INT_MAX;
+        backtracking(nums, m, 0, 0, minLargest);
+        return minLargest;
+    }
+    
+    void backtracking(vector<int>& nums, int m, int start, int curLargest, int& minLargest){
+        int n = nums.size();
+        int sum = 0;
+        
+        if(m == 1){
+            for(int i = start; i < n; i++){
+                sum += nums[i];
+            }
+            curLargest = max(sum, curLargest);
+            minLargest = min(minLargest, curLargest);
+            //cout << minLargest << endl;
+            return;
+        }
+        
+        for(int i = start; i <= n - m; i++){
+            sum += nums[i];
+            int temp = curLargest;
+            curLargest = max(sum, curLargest);
+            backtracking(nums, m - 1, i + 1, curLargest, minLargest);
+            curLargest = temp;
+        }
+    }
+};
+
+2. Dynamic Programmming
+dp[i][j] = min(dp[i][j], max(dp[k][j - 1], nums[k + 1] + ... + nums[i]))  k = 0 ~ i - 1
+
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int n = nums.size();
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, INT_MAX));
+        vector<long> sums(n + 1, 0);
+        for(int i = 0; i < n; i++){
+            sums[i + 1] = sums[i] + nums[i];
+        }
+        dp[0][0] = 0;
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= m; j++){
+                for(int k = 0; k < i; k++){
+                    dp[i][j] = min(dp[i][j], max(dp[k][j - 1], (int)(sums[i] - sums[k])));
+                }
+            }
+        }
+        return dp[n][m];
+    }
+};
+
+3. Binary Search of sums
+There is a sum that is at the boundary where all sums smaller are invalid and all sums larger are valid. We need to use binary search
+to find this sum.
+
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int n = nums.size();
+        long long rightLimit = 0, leftLimit = 0;
+        for(int i = 0; i < n; i++){
+            rightLimit += nums[i];
+            if(leftLimit < nums[i]) leftLimit = nums[i];
+        }
+        long long minSum = rightLimit;
+        while(leftLimit <= rightLimit){
+            long long mid = (leftLimit + rightLimit) >> 1;
+            long long sum = 0;
+            int count = 1;
+            for(int i = 0; i < n; i++){
+                if(sum + nums[i] > mid){
+                    count++;
+                    sum = nums[i];
+                }
+                else sum += nums[i];
+            }
+            if(count <= m){
+                minSum = min(minSum, mid);
+                rightLimit = mid - 1;
+            }
+            else leftLimit = mid + 1;
+        }
+        return minSum;
+    }
+};
