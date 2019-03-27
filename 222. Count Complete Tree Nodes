@@ -1,0 +1,36 @@
+1. Divide and Conquer
+At each node, compute left-deepest height and right-deepest height, if the subtree is complete, the two heights should be the same. And
+the number of nodes in this subtree can be directly compute; otherwise, if the two heights are different, we need to compute the nodes
+in left subtree and right subtree respectively, whose sum plus one should will be the nubmer of nodes in this subtree.
+
+Time complexity: O(logN * logN)
+T(n) = T(n/2) + logn
+     = T(n/4) + logn + log(n/2)
+     = T(n/8) + logn + log(n/2) + log(n/4)
+     = ...
+     = T(1) + logn + log(n/2) + log(n/4) + ... + log(2)
+     = T(1) + logn + logn - 1 + logn - 2 + ... + 1
+     = O(((1 + logn) * logn)) / 2) 
+     = O(logn * logn)
+
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        if(!root) return 0;
+        
+        TreeNode *left = root, *right = root;
+        int leftHeight = 0, rightHeight = 0;
+        while(left || right){
+            if(left){
+                leftHeight++;
+                left = left->left;
+            }
+            if(right){
+                rightHeight++;
+                right = right->right;
+            }
+        }
+        if(leftHeight == rightHeight) return pow(2, leftHeight) - 1;
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
+};
