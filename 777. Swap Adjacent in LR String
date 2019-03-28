@@ -1,0 +1,32 @@
+1. Two pointers
+The key idea is: both two kinds of swap involves 'X', it means that the position of 'X' is not as important as 'L' and 'R'. Then we can 
+focus on the position of 'L' and 'R'. Notice that 'L' can only be moved to the right, and 'R' can only be moved to the left, which indicates
+that in the end string, the position of 'L' should be no larger than in the start string; the position of 'R' in the end string should be
+no smaller than in the start string.
+
+class Solution {
+public:
+    bool canTransform(string start, string end) {
+        if(start.size() != end.size()) return false;
+        int len = start.size();
+        int ptr1 = 0, ptr2 = 0;
+        while(ptr1 < len && ptr2 < len){
+            while(ptr1 < len && start[ptr1] == 'X') ptr1++;
+            while(ptr2 < len && end[ptr2] == 'X') ptr2++;
+            
+            if(ptr1 == len && ptr2 == len) return true;
+            
+            if(ptr1 == len || ptr2 == len) return false;
+            
+            if(start[ptr1] != end[ptr2]) return false;
+            
+            if(start[ptr1] == 'L' && ptr2 > ptr1) return false;
+            
+            if(start[ptr1] == 'R' && ptr2 < ptr1) return false;
+            
+            ptr1++;
+            ptr2++;
+        }
+        return true;
+    }
+};
